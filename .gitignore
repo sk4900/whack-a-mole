@@ -1,2 +1,3 @@
 #.gitignore includes files to ignore when pushing and pulling
 *.xml
+.idea/*
