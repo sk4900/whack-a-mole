@@ -1,4 +1,5 @@
 package server;
+import static common.WAMProtocol.*;
 
 import java.io.IOException;
 
