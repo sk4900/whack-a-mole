@@ -13,7 +13,7 @@ import java.net.ServerSocket;
 
 import java.util.Scanner;
 
-/**WAMServer is responsible for constructing and maintaining a Wack-A-Mole-server
+/**WAMServer is responsible for constructing and maintaining a Wack-A-Mole server
  * @author Kadin Benjamin ktb1193*/
 public class WAMServer implements Runnable {
 
@@ -21,53 +21,79 @@ public class WAMServer implements Runnable {
      * specifiable port.*/
     private ServerSocket serverSocket;
 
-    /**a two-dimensional-integer array that represents a Wack-A-Mole-board.*/
-    private int[][] board;  //may change
+    /**an integer that represents the width of a Wack-A-Mole board.*/
+    private int gameWidth;
+
+    /**an integer that represents the height of a Wack-A-Mole board.*/
+    private int gameHeight;
 
     /**an integer that represents the requisite number of connected clients
      * to start a game.*/
-    private int clients;    //may change to something like a clienthandler
+    private int connections;
 
     /**an integer that represents the length of a game in seconds.*/
-    private int time;       //may change to another type
+    private int time;
 
-    /**...creates a server.
+    /**...creates a WAM server.
      * @throws IOException if there is an error while opening this socket.
      * @throws IllegalArgumentException if an illicit argument is provided.*/
-    public WAMServer(int port, int rows, int columns, int clients, int time)
+    public WAMServer(int port, int rows, int columns, int connections, int time)
         throws IOException, IllegalArgumentException {
         serverSocket = new ServerSocket(port);
-        board = new int[columns][rows];
-        this.clients = clients;
+        gameWidth = columns;
+        gameHeight = rows;
+        this.connections = connections;
         this.time = time;
     }
 
-    /**run is responsible for maintaining the Wack-A-Mole-server and providing
+    /**run is responsible for maintaining the Wack-A-Mole server and providing
      * an environment that connected clients may interact with.*/
-    public void run() {  }
+    @Override
+    public void run() {
+        WAMNetworkClient[] clients = new WAMNetworkClient[connections];
+        try { for (int i = 0; i < clients.length; i++) { //establish connections
+                clients[i] = new WAMNetworkClient(serverSocket.accept());
+            }
+        } catch (IOException ioe) {
+            System.out.println("client connection failure:\n");
+            ioe.printStackTrace();
+        }
+        WAMGame game = new WAMGame(clients, gameWidth, gameHeight, time);
+        new Thread(game).run(); //start the game
+    }
 
-    /**main is responsible for starting a Wack-A-Mole-server and detailing
+    /**main is responsible for starting a Wack-A-Mole server and detailing
      * any issues in that process.*/
     public static void main(String[] args) {
-        while (args.length < 5) { //check arguments
-            System.out.println("Usage: #game-port " +
-                "#rows #columns #players #game-time");
-            Scanner in = new Scanner(System.in);
-            args = in.nextLine().split(" ");
-            try { int[] params = new int[args.length];
-                for (int i = 0; i < args.length ; i++) {
+        int[] params = new int[5];
+        boolean start = false;
+        while (!start) { //check arguments
+            while (args.length < 5) {
+                System.out.println("usage-> #port #rows " +
+                    "#columns #players #game-time" +
+                    "\nenter arguments: ");
+                Scanner in = new Scanner(System.in);
+                args = in.nextLine().split(" ");
+            }
+            try { for (int i = 0; i < args.length ; i++) {
                     params[i] = Integer.parseInt(args[i]);
                 }
-            } catch (NumberFormatException nfe) {  }
+                start = true;
+            } catch (NumberFormatException nfe) {
+                System.out.println("illicit arguments:\n");
+                args = new String[0];
+            }
         }
         WAMServer server; //try making the server
         try { server = new WAMServer(params[0], params[1],
                 params[2], params[3], params[4]);
-            new Thread(server).run();
+            server.run(); //start server
         } catch (IOException ioe) {
-            System.out.println("server failure:\n" + ioe);
+            System.out.println("server failure:\n");
+            ioe.printStackTrace();
         } catch (IllegalArgumentException iae) {
-            System.out.println("server failure:\n" + iae);
+            System.out.println("server failure:\n");
+            iae.printStackTrace();
         }
     }
 }
