@@ -36,7 +36,7 @@ public class WAMNetworkPlayer {
      * @throws IllegalArgumentException if the specified port number
      * transgresses the range for legal port numbers.*/
     public WAMNetworkPlayer(String host, int port)
-        throws IOException, IllecgalArgumentException {
+        throws IOException, IllegalArgumentException {
         player = new Socket(host, port);
         input = new Scanner(player.getInputStream());
         output = new PrintStream(player.getOutputStream());
