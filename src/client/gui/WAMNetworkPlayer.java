@@ -5,14 +5,18 @@ import java.io.PrintStream;
 
 import java.lang.IllegalArgumentException;
 import java.lang.NumberFormatException;
+import java.lang.Thread;
 
 import java.net.Socket;
 
 import java.util.Scanner;
 
+import static common.WAMProtocol.*;
+
 /**WAMNetworkPlayer communicates a player's GUI application with a
  * WAM server, and so it represents the controller in the
  * model-view-controller architecture.
+ * WAMNetworkPlayer -> ServerSocket -> WAMNetworkClient
  * @author Kadin Benjamin ktb1193*/
 public class WAMNetworkPlayer {
 
@@ -25,6 +29,16 @@ public class WAMNetworkPlayer {
 
     /**a PrintStream that prints to the player's OutputStream.*/
     private PrintStream output;
+
+    /**an integer that represents this player's numerical designation
+     * on a WAM server.*/
+    private int playerNumber;
+
+    /**an integer that represents the count of the game-board's rows.*/
+    private int rows;
+
+    /**an integer that represents the count of the game-board's columns.*/
+    private int columns;
 
     /**..creates a player.
      * @param host is a String that represents a server's hostname
@@ -42,32 +56,18 @@ public class WAMNetworkPlayer {
         output = new PrintStream(player.getOutputStream());
     }
 
+    /**getRows
+     * @return an integer count of the game-board's rows.*/
+    public int getRows() { return rows; }
+
+    /**getColumns
+     * @return an integer count of the game-board's columns.*/
+    public int getColumns() { return columns; }
+
+    /**startListening starts an internal Thread of this object's
+     * run method, which listens to requests from a server.*/
+    public void startListening() { new Thread(this::run).start(); }
+
     /***/
-    /*FOR WAMGUI CLASS
-    public static void main(String[] args) {
-        boolean start = false;
-        while (!start) {
-            while (args.length < 2) {
-                System.out.println("usage-> hostname #port" +
-                    "\nenter arguments: ");
-                Scanner in = new Scanner(System.in);
-                args = in.nextLine().split(" ");
-            }
-            try {
-                int port = Integer.parseInt(args[1]);
-                Socket socket = new Socket(args[0], port);
-                //give socket to player
-                start = true;
-            }
-            catch (NumberFormatException nfe) {
-                System.out.println("");
-                args = new String[0];
-            }
-            catch (IOException ioe) {
-                System.out.println("");
-                args = new String[0];
-            }
-        }
-    }
-    */
+    private void run() {  }
 }

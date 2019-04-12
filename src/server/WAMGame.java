@@ -1,8 +1,13 @@
 package server;
 
+import java.io.IOException;
+
 import java.lang.Runnable;
+import java.lang.Thread;
 
 import java.net.Socket;
+
+import static common.WAMProtocol.*;
 
 /***/
 public class WAMGame implements Runnable {
@@ -15,7 +20,7 @@ public class WAMGame implements Runnable {
     //unless this becomes the game
 
     /***/
-    public WAMGame(WAMNetworkClient[] clients, int x, int y, int t) {
+    public WAMGame(WAMNetworkClient[] clients, int rows, int columns, int t) {
         this.clients = clients;
     }
 

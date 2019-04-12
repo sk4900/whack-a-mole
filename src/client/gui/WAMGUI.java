@@ -17,18 +17,40 @@ import static common.WAMProtocol.*;
 
 /** responsible for creating the board
  *
+ * @author you
+ * @author Kadin Benjamin ktb1193
  */
 public class WAMGUI extends Application {
 
     /** List of command line arguments */
     private List<String> params;
 
+    /**the WAMNetworkPlayer is the controller that notifies the GUI
+     * application of the server's requests and the server of the GUI
+     * application's response, if required.*/
+    private WAMNetworkPlayer controller;
+
     /**
      * Creates the client socket and connects to the server
      * @param args command-line arguments
      */
     public static void main(String[] args) {
+        launch(args);
+    }
 
+    /**
+     * processes command-line arguments
+     */
+    @Override
+    public void init(){
+        Parameters parameters = getParameters();
+        this.params = parameters.getRaw();
+        /*if (this.params.size() != 5){
+            System.err.println("Exiting, needs 5 arguments to start");
+        }
+        System.exit(1);*/
+        //sets up this application's controller
+        String[] args = params.toArray(new String[2]);
         boolean start = false;
         while (!start) {
             while (args.length < 2) {
@@ -39,31 +61,17 @@ public class WAMGUI extends Application {
             }
             try {
                 int port = Integer.parseInt(args[1]);
-                Socket socket = new Socket(args[0], port);
-                //give socket to player
+                controller = new WAMNetworkPlayer(args[0], port);
                 start = true;
             } catch (NumberFormatException nfe) {
-                System.out.println("");
+                System.out.println("illicit arguments...");
                 args = new String[0];
             } catch (IOException ioe) {
-                System.out.println("");
+                System.out.println("failed connecting...");
                 args = new String[0];
             }
-            launch(args);
         }
-    }
-
-    /**
-     * processes command-line arguments
-     */
-    @Override
-    public void init(){
-            Parameters parameters = getParameters();
-            this.params = parameters.getRaw();
-            if (this.params.size() != 5){
-                System.err.println("Exiting, needs 5 arguments to start");
-            }
-            System.exit(1);
+        controller.startListening();
     }
 
     /**
@@ -74,8 +82,9 @@ public class WAMGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
-        int rows = Integer.parseInt(this.params.get(1));
-        int columns = Integer.parseInt(this.params.get(2));
+        //get rows and columns from server eventually
+        int rows = 4;//controller.getRows();
+        int columns = 4;//controller.getColumns();
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++){
                 Button button = new Button();
