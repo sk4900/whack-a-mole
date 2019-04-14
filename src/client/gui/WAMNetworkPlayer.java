@@ -1,5 +1,6 @@
 package client.gui;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -19,7 +20,7 @@ import static common.WAMProtocol.*;
  * model-view-controller architecture.
  * WAMNetworkPlayer -> ServerSocket -> WAMNetworkClient
  * @author Kadin Benjamin ktb1193*/
-public class WAMNetworkPlayer {
+public class WAMNetworkPlayer implements Closeable {
 
     /**a Socket that maintains the connection between the player
      * and a server.*/
@@ -32,10 +33,20 @@ public class WAMNetworkPlayer {
     private PrintStream output;
 
     /**an integer that represents this player's numerical designation
-     * on a WAM server.*/
+     * on a WAM server and its order of connection, relative to the other
+     * players that are connected to the server.*/
     private int playerNumber;
 
-    /**WAMBoard represents the state of the WAM game.*/
+    /**a String that represents the outcome of this player:
+     * GAME_WON, GAME_LOST, GAME_TIED, ERROR, if there is one, or
+     * null if neither.*/
+    private String playerOutcome;
+
+    /**an integer array of which each index represents a player by its
+     * playerNumber and points to that player's score.*/
+    private int[] playerScores;
+
+    /**a WAMBoard that represents the state of the WAM game.*/
     private WAMBoard board;
 
     /**..creates a player.
@@ -52,6 +63,7 @@ public class WAMNetworkPlayer {
         player = new Socket(host, port);
         input = new Scanner(player.getInputStream());
         output = new PrintStream(player.getOutputStream());
+        playerOutcome = null;
     }
 
     /**startListening starts an internal Thread of this object's
@@ -66,40 +78,65 @@ public class WAMNetworkPlayer {
      * @return an integer count of the game-board's rows.*/
     public int getRows() { return board.getRows(); }
 
+    /**getScores
+     * @return the score of each player connected to the WAM server that
+     * this player is connected to.*/
+    public int[] getScores() { return playerScores; }
+
     /**sendMessage sends a String object to the WAM server that this player
      * is connected to.
      * @throws IOException if sending or receiving the message fails.*/
     public void sendMessage(String message) throws IOException { output.print(message); }
 
-    /**run responds to requests from the WAM server.*/
+    /**close shutdowns this player's InputStream and OutputStream and
+     * terminates its presence on a network.*/
+    @Override
+    public void close() {
+        try { player.close(); }
+        catch (IOException ioe)
+        { System.out.println("unsuccessful disconnect"); }
+    }
+
+    /**run responds to messages from the WAM server.*/
     private void run() {
         while (input.hasNextLine()) {
             String[] request = input.nextLine().split(" ");
-            int[] detail = new int[request.length - 1];
-            for (int i = 1; i < request.length; i++) {
-                detail[i - 1] = Integer.parseInt(request[i]);
-            }
-            switch (request[0]) {
-                case WELCOME:
-                    board = new WAMBoard(detail[1], detail[0]);
-                    playerNumber = (detail[3] % detail[2]) + 1;
-                    break;
-                case MOLE_UP:
-                    board.setMoleUp(detail[0]);
-                    break;
-                case MOLE_DOWN:
-                    board.setMoleDown(detail[0]);
-                    break;
-                case SCORE:
-                    break;
-                case GAME_WON:
-                    break;
-                case GAME_LOST:
-                    break;
-                case GAME_TIED:
-                    break;
-                case ERROR:
-                    break;
+            if (request[0] == ERROR) {
+                for (String s : request)
+                { playerOutcome = playerOutcome.concat(s); }
+                close();
+            } else {
+                int[] detail = new int[request.length - 1];
+                for (int i = 1; i < request.length; i++)
+                { detail[i - 1] = Integer.parseInt(request[i]); }
+                switch (request[0]) {
+                    case WELCOME:
+                        board = new WAMBoard(detail[1], detail[0]);
+                        playerNumber = (detail[3] % detail[2]) + 1;
+                        break;
+                    case MOLE_UP:
+                        board.setMoleUp(detail[0]);
+                        break;
+                    case MOLE_DOWN:
+                        board.setMoleDown(detail[0]);
+                        break;
+                    case SCORE:
+                        for (int i = 0; i < detail.length; i++)
+                        { playerScores[i] = detail[i]; }
+                        break;
+                    case GAME_WON:
+                        playerOutcome = "VICTORY";
+                        close();
+                        break;
+                    case GAME_LOST:
+                        playerOutcome = "DEFEAT";
+                        close();
+                        break;
+                    case GAME_TIED:
+                        playerOutcome = "DRAW";
+                        close();
+                        break;
+                }
             }
         }
     }

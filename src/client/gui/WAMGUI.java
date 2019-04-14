@@ -73,7 +73,6 @@ public class WAMGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
-        //get rows and columns from server eventually
         int rows = controller.getRows();
         int columns = controller.getColumns();
         for (int i = 0; i < rows; i++){
