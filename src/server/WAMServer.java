@@ -56,8 +56,7 @@ public class WAMServer implements Runnable {
      * an environment that connected clients may interact with.*/
     @Override
     public void run() {
-        try {
-            WAMNetworkClient[] clients = new WAMNetworkClient[connections];
+        try { WAMNetworkClient[] clients = new WAMNetworkClient[connections];
             for (int i = 0; i < clients.length; i++) { //establish connections
                 System.out.println("listening for client " + i);
                 Socket client = serverSocket.accept();
