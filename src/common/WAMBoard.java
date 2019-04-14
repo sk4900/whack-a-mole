@@ -66,6 +66,8 @@ public class WAMBoard {
     public void setMoleUp(int x) {
         int[] xy = getColumnRow(x);
         board[xy[0]][xy[1]] = 1;
+        alertObservers();
+
     }
 
     /**setMoleDown sets the integer value at some location of this
@@ -73,6 +75,7 @@ public class WAMBoard {
     public void setMoleDown(int x) {
         int[] xy = getColumnRow(x);
         board[xy[0]][xy[1]] = 0;
+        alertObservers();
     }
 
     /**toString

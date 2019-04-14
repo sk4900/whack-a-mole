@@ -60,6 +60,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 int columns = Integer.parseInt(args[3]);
                 controller = new WAMNetworkPlayer(args[0], port);
                 this.board = new WAMBoard(rows, columns);
+                board.addObserver(new WAMGUI());
                 start = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("illicit arguments...");
@@ -82,8 +83,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         GridPane grid = new GridPane();
         int rows = board.getRows();
         int columns = board.getColumns();
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+        for (int i = 0; i < columns; i++){
+            for (int j = 0; j < rows; j++){
                 Button button = new Button();
                 button.setMaxHeight(100);
                 button.setMaxWidth(100);
@@ -105,7 +106,6 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         primaryStage.setScene(scene);
         primaryStage.setTitle("Whack-A-Mole");
         primaryStage.setResizable(false);
-
         primaryStage.show();
     }
     /**
@@ -115,12 +115,11 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
 
         for (int i = 0; i < board.getRows(); i++){
             for (int j = 0; j < board.getColumns(); j++) {
-                if( board.getMoleStatus(i, j ) == 1){
+                if( board.getMoleStatus(i, j) == 1){
 
 
                 }
             }
-
         }
     }
 
