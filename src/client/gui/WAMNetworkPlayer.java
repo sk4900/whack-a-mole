@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import java.lang.IllegalArgumentException;
-import java.lang.NumberFormatException;
 import java.lang.Thread;
 
 import java.net.Socket;
 
 import java.util.Scanner;
 
-import common.WAMBoard;
 import static common.WAMProtocol.*;
 
 /**WAMNetworkPlayer communicates a player's GUI application with a
@@ -78,6 +76,18 @@ public class WAMNetworkPlayer implements Closeable {
      * @return an integer count of the game-board's rows.*/
     public int getRows() { return board.getRows(); }
 
+    /**getPlayerNumer
+     * @return an integer that represents the order of this player's
+     * connection, relative to the other player's connected to the same
+     * WAM server.*/
+    public int getPlayerNumber() { return playerNumber; }
+
+    /**getPlayerOutcome
+     * @return a String that represents the outcome of this player
+     * after the completion of WAM or the reception of an ERROR message
+     * from the WAM server.*/
+    public String getPlayerOutcome() { return playerOutcome; }
+
     /**getScores
      * @return the score of each player connected to the WAM server that
      * this player is connected to.*/
@@ -101,7 +111,7 @@ public class WAMNetworkPlayer implements Closeable {
     private void run() {
         while (input.hasNextLine()) {
             String[] request = input.nextLine().split(" ");
-            if (request[0] == ERROR) {
+            if (request[0].equals(ERROR)) {
                 for (String s : request)
                 { playerOutcome = playerOutcome.concat(s); }
                 close();

@@ -1,8 +1,6 @@
 package client.gui;
 
-import common.WAMBoard;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -15,14 +13,14 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
-import static common.WAMProtocol.*;
+import static common.WAMProtocol.WHACK;
 
 /** responsible for creating the board
  *
  * @author you
  * @author Kadin Benjamin ktb1193
  */
-public class WAMGUI extends Application implements Observer<WAMBoard>{
+public class WAMGUI extends Application implements Observer<WAMBoard> {
 
     /**the WAMNetworkPlayer is the controller that notifies the GUI
      * application of the server's requests and the server of the GUI
@@ -30,10 +28,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     private WAMNetworkPlayer controller;
 
     /***/
-    private WAMBoard board;
+    private Stage board;
 
-    /***/
-    private Scene scene;
     /**
      * Creates the client socket and connects to the server
      * @param args command-line arguments
@@ -56,11 +52,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
             try {
                 int port = Integer.parseInt(args[1]);
-                int rows = Integer.parseInt(args[2]);
-                int columns = Integer.parseInt(args[3]);
                 controller = new WAMNetworkPlayer(args[0], port);
-                this.board = new WAMBoard(rows, columns);
-                board.addObserver(new WAMGUI());
                 start = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("illicit arguments...");
@@ -81,10 +73,10 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     @Override
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
-        int rows = board.getRows();
-        int columns = board.getColumns();
-        for (int i = 0; i < columns; i++){
-            for (int j = 0; j < rows; j++){
+        int rows = controller.getRows();
+        int columns = controller.getColumns();
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < columns; j++){
                 Button button = new Button();
                 button.setMaxHeight(100);
                 button.setMaxWidth(100);
@@ -98,6 +90,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         TextArea text = new TextArea();
         text.setEditable(false);
         text.setText("Welcome to Whack-A-Mole");
+
         text.setMaxWidth(grid.getColumnCount() * 100);
         text.setMaxHeight(100);
         border.setBottom(text);
@@ -108,6 +101,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         primaryStage.setResizable(false);
         primaryStage.show();
     }
+
     /**
      * updates GUI
      */
@@ -138,6 +132,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             Platform.runLater( () -> this.refresh() );
         }
     }
+
     /***/
     @Override
     public void stop() {  }

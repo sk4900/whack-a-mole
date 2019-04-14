@@ -36,7 +36,6 @@ public class WAMNetworkClient implements Closeable, Runnable {
     /**...creates a client.
      * @param
      * @param
-     * @param
      * @throws IOException if an error occurs while accessing a
      * client's InputStream and OutputStream.*/
     public WAMNetworkClient(Socket client, int connectionOrder)

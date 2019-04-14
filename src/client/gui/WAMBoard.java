@@ -1,8 +1,8 @@
-package common;
+package client.gui;
 
 import java.util.LinkedList;
 import java.util.List;
-import client.gui.Observer;
+
 /**WAMBoard represents the board of a Whack-A-Mole game and includes
  * methods for updating its state.
  * @author Kadin Benjamin ktb1193*/
