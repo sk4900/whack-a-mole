@@ -1,5 +1,8 @@
 package common;
 
+import java.util.LinkedList;
+import java.util.List;
+import client.gui.Observer;
 /**WAMBoard represents the board of a Whack-A-Mole game and includes
  * methods for updating its state.
  * @author Kadin Benjamin ktb1193*/
@@ -16,13 +19,32 @@ public class WAMBoard {
      * column c (0 <= c <= columns) with some row r(0 <= r <= rows).*/
     private int[][] board;
 
+    /** the observers of this model */
+    private List<Observer<WAMBoard>> observers;
+
     /**...creates a WAMBoard of specifiable rows and specifiable columns.*/
     public WAMBoard(int columns, int rows) {
+        this.observers =new LinkedList<>();
         this.columns = columns;
         this.rows = rows;
         board = new int[columns][rows];
     }
 
+    /**
+     * The view calls this method to add themselves as an observer of the model.
+     *
+     * @param observer the observer
+     */
+    public void addObserver(Observer<WAMBoard> observer) {
+        this.observers.add(observer);
+    }
+
+    /** when the model changes, the observers are notified via their update() method */
+    private void alertObservers() {
+        for (Observer<WAMBoard> obs: this.observers ) {
+            obs.update(this);
+        }
+    }
     /**getColumns
      * @return an int that is the count of this board's columns.*/
     public int getColumns() { return columns; }
@@ -30,6 +52,14 @@ public class WAMBoard {
     /**getRows
      * @return an int that is the count of this board's rows.*/
     public int getRows() { return rows; }
+
+    /**
+     * returns 1 or 0 if mole is up or down respectively
+     * @param row
+     * @param column
+     * @return
+     */
+    public int getMoleStatus(int row, int column) {return board[row][column];}
 
     /**setMoleUp sets the integer value at some location of this
      * board equal to one; this represents a surfaced mole.*/

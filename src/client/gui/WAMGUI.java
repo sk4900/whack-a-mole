@@ -1,6 +1,8 @@
 package client.gui;
 
+import common.WAMBoard;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -20,7 +22,7 @@ import static common.WAMProtocol.*;
  * @author you
  * @author Kadin Benjamin ktb1193
  */
-public class WAMGUI extends Application {
+public class WAMGUI extends Application implements Observer<WAMBoard>{
 
     /**the WAMNetworkPlayer is the controller that notifies the GUI
      * application of the server's requests and the server of the GUI
@@ -28,8 +30,10 @@ public class WAMGUI extends Application {
     private WAMNetworkPlayer controller;
 
     /***/
-    private Stage board;
+    private WAMBoard board;
 
+    /***/
+    private Scene scene;
     /**
      * Creates the client socket and connects to the server
      * @param args command-line arguments
@@ -52,7 +56,10 @@ public class WAMGUI extends Application {
             }
             try {
                 int port = Integer.parseInt(args[1]);
+                int rows = Integer.parseInt(args[2]);
+                int columns = Integer.parseInt(args[3]);
                 controller = new WAMNetworkPlayer(args[0], port);
+                this.board = new WAMBoard(rows, columns);
                 start = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("illicit arguments...");
@@ -73,8 +80,8 @@ public class WAMGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
-        int rows = controller.getRows();
-        int columns = controller.getColumns();
+        int rows = board.getRows();
+        int columns = board.getColumns();
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++){
                 Button button = new Button();
@@ -90,7 +97,6 @@ public class WAMGUI extends Application {
         TextArea text = new TextArea();
         text.setEditable(false);
         text.setText("Welcome to Whack-A-Mole");
-
         text.setMaxWidth(grid.getColumnCount() * 100);
         text.setMaxHeight(100);
         border.setBottom(text);
@@ -99,9 +105,40 @@ public class WAMGUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Whack-A-Mole");
         primaryStage.setResizable(false);
+
         primaryStage.show();
     }
+    /**
+     * updates GUI
+     */
+    private void refresh() {
 
+        for (int i = 0; i < board.getRows(); i++){
+            for (int j = 0; j < board.getColumns(); j++) {
+                if( board.getMoleStatus(i, j ) == 1){
+
+
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Called by the model, WAMBoard whenever there is a state change
+     * that needs to be updated by the GUI.
+     *
+     * @param WAMboard
+     */
+    @Override
+    public void update(WAMBoard WAMboard) {
+        if ( Platform.isFxApplicationThread() ) {
+            this.refresh();
+        }
+        else {
+            Platform.runLater( () -> this.refresh() );
+        }
+    }
     /***/
     @Override
     public void stop() {  }
