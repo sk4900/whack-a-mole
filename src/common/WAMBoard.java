@@ -5,7 +5,9 @@ import java.util.List;
 import client.gui.Observer;
 /**WAMBoard represents the board of a Whack-A-Mole game and includes
  * methods for updating its state.
- * @author Kadin Benjamin ktb1193*/
+ * @author Kadin Benjamin ktb1193
+ * @author Sungmin Kim  sk4900*/
+
 public class WAMBoard {
 
     /**an integer that represents the count of the board's columns.*/
