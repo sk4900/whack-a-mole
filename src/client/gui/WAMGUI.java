@@ -83,7 +83,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         int columns = controller.getColumns();
         int rows = controller.getRows();
         this.moles = new Button[columns][rows];
-        for (int y = rows - 1; y > -1; y--) {
+        for (int y = 0; y < rows; y++) {
             for (int x = columns - 1; x > -1; x--) {
                 Button button = createButton(x + y);
                 this.moles[x][y] = button;
@@ -108,7 +108,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     }
 
     /**createButton creates a button that represents a mole.
-     * @param an integer that represents a mole's position on a WAM board.*/
+     * @param id an integer that represents a mole's position on a WAM board.*/
     private Button createButton(int id) {
         Button b = new Button();
         b.setMaxHeight(100);
@@ -129,13 +129,13 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * updates GUI
      */
     private void refresh() {
-        for (int y = controller.getRows() - 1; y > -1; y--){
+        for (int y = 0; y < controller.getRows(); y++){
             for (int x = controller.getColumns() - 1; x > -1; x--) {
                 System.out.println(board.toString());
-                if( controller.getMoleStatus(y, x) == 1){
+                if( controller.getMoleStatus(x, y) == 1){
                     moles[x][y].setStyle("-fx-background-color: #654321");
                 }
-                else if(controller.getMoleStatus(y, x) == 0){
+                else if(controller.getMoleStatus(x, y) == 0){
                     moles[x][y].setStyle("-fx-background-color: #000000");
 
                 }

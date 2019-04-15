@@ -95,7 +95,7 @@ public class WAMBoard {
     @Override
     public String toString() {
         String s = "";
-        for (int y = rows - 1; y > -1; y--) {
+        for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
                 s = s.concat("[" + String.valueOf(board[x][y]) + "]");
             }
