@@ -27,7 +27,6 @@ public class WAMBoard {
     /**...creates a WAMBoard of specifiable rows and specifiable columns.*/
     public WAMBoard() {
         this.observers = new LinkedList<>();
-        board = new int[columns][rows];
     }
 
     /**
@@ -58,6 +57,10 @@ public class WAMBoard {
      * @param columns*/
     public void setColumns(int columns) { this.columns = columns;}
 
+    /**
+     *
+     */
+    public void setBoardSize(int columns, int rows) { this.board = new int[columns][rows];}
     /**
      * sets the number of rows
      * @param rows*/

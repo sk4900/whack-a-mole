@@ -54,6 +54,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
             try {
                 int port = Integer.parseInt(args[1]);
+                board.setRows(3);
+                board.setColumns(4);
                 controller = new WAMNetworkPlayer(args[0], port, this.board);
                 start = true;
             } catch (NumberFormatException nfe) {
@@ -105,6 +107,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         primaryStage.setTitle("Whack-A-Mole");
         primaryStage.setResizable(false);
         primaryStage.show();
+        board.addObserver(this);
     }
     /**
      * updates GUI
@@ -112,6 +115,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     private void refresh() {
         for (int x = 0; x < controller.getColumns(); x++){
             for (int y = 0; y < controller.getRows(); y++) {
+                System.out.println(board.toString());
                 if( controller.getMoleStatus(x, y) == 1){
                     moles[x][y].setStyle("-fx-background-color: #654321");
                 }
