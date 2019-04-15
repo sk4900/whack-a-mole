@@ -75,15 +75,15 @@ public class WAMNetworkPlayer implements Closeable {
 
     /**getRows
      * @return an integer count of the game-board's rows.*/
-
     public int getRows() { return board.getRows(); }
+
     /**
      * returns 1 or 0 if mole is up or down respectively
      * @param row
      * @param column
      * @return
      */
-    public int getMoleStatus(int row, int column) {return board.getMoleStatus(row, column);}
+    public int getMoleStatus(int column, int row) { return board.getMoleStatus(column, row); }
 
     /**getPlayerNumer
      * @return an integer that represents the order of this player's
@@ -130,7 +130,8 @@ public class WAMNetworkPlayer implements Closeable {
                 { detail[i - 1] = Integer.parseInt(request[i]); }
                 switch (request[0]) {
                     case WELCOME:
-                        board = new WAMBoard(detail[1], detail[0]);
+                        board.setColumns(detail[1]);
+                        board.setRows(detail[0]);
                         playerNumber = (detail[3] % detail[2]) + 1;
                         break;
                     case MOLE_UP:

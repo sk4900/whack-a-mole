@@ -26,7 +26,7 @@ public class WAMBoard {
 
     /**...creates a WAMBoard of specifiable rows and specifiable columns.*/
     public WAMBoard() {
-        this.observers =new LinkedList<>();
+        this.observers = new LinkedList<>();
         board = new int[columns][rows];
     }
 
@@ -55,14 +55,12 @@ public class WAMBoard {
 
     /**
      * sets the number of columns
-     * @param columns
-     */
+     * @param columns*/
     public void setColumns(int columns) { this.columns = columns;}
 
     /**
      * sets the number of rows
-     * @param rows
-     */
+     * @param rows*/
     public void setRows(int rows) {this.rows = rows;}
 
     /**
@@ -71,7 +69,7 @@ public class WAMBoard {
      * @param column
      * @return
      */
-    public int getMoleStatus(int row, int column) {return board[row][column];}
+    public int getMoleStatus(int column, int row) { return board[column][row]; }
 
     /**setMoleUp sets the integer value at some location of this
      * board equal to one; this represents a surfaced mole.*/
@@ -79,7 +77,6 @@ public class WAMBoard {
         int[] xy = getColumnRow(x);
         board[xy[0]][xy[1]] = 1;
         alertObservers();
-
     }
 
     /**setMoleDown sets the integer value at some location of this
