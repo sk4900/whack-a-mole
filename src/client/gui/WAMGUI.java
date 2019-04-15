@@ -114,7 +114,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      */
     private void refresh() {
         for (int x = controller.getRows() - 1; x > -1; x--){
-            for (int y = controller.getColumns() - 1; y < -1; y--) {
+            for (int y = controller.getColumns() - 1; y > -1; y--) {
                 System.out.println(board.toString());
                 if( controller.getMoleStatus(y, x) == 1){
                     moles[y][x].setStyle("-fx-background-color: #654321");
