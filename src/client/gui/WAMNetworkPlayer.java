@@ -56,12 +56,13 @@ public class WAMNetworkPlayer implements Closeable {
      * a server or while opening a player's InputStream or OutputStream.
      * @throws IllegalArgumentException if the specified port number
      * transgresses the range for legal port numbers.*/
-    public WAMNetworkPlayer(String host, int port)
+    public WAMNetworkPlayer(String host, int port, WAMBoard board)
         throws IOException, IllegalArgumentException {
         player = new Socket(host, port);
         input = new Scanner(player.getInputStream());
         output = new PrintStream(player.getOutputStream());
         playerOutcome = null;
+        this.board = board;
     }
 
     /**startListening starts an internal Thread of this object's
