@@ -27,9 +27,12 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * application of the server's requests and the server of the GUI
      * application's response, if required.*/
     private WAMNetworkPlayer controller;
-    /***/
+
+    /**a two-dimenstional array of Buttons, where each button represents
+     * a mole.*/
     private Button[][] moles;
 
+    /**a WAM board.*/
     private WAMBoard board = new WAMBoard();
 
     /**
@@ -67,7 +70,6 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
         }
         controller.startListening();
-
     }
 
     /**
@@ -81,18 +83,13 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         int columns = controller.getColumns();
         int rows = controller.getRows();
         this.moles = new Button[columns][rows];
-        for (int x = rows - 1; x > -1; x--) {
-            for (int y = columns - 1; y > -1; y--) {
-                Button button = new Button();
-                button.setMaxHeight(100);
-                button.setMaxWidth(100);
-                button.setMinHeight(100);
-                button.setMinWidth(100);
-                this.moles[y][x] = button;
-                grid.add(button, y, x);
+        for (int y = rows - 1; y > -1; y--) {
+            for (int x = columns - 1; x > -1; x--) {
+                Button button = createButton(x + y);
+                this.moles[x][y] = button;
+                grid.add(button, x, y);
             }
         }
-
         grid.setGridLinesVisible(true);
         BorderPane border = new BorderPane();
         TextArea text = new TextArea();
@@ -109,18 +106,37 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         primaryStage.show();
         board.addObserver(this);
     }
+
+    /**createButton creates a button that represents a mole.
+     * @param an integer that represents a mole's position on a WAM board.*/
+    private Button createButton(int id) {
+        Button b = new Button();
+        b.setMaxHeight(100);
+        b.setMaxWidth(100);
+        b.setMinHeight(100);
+        b.setMinWidth(100);
+        b.setOnAction(event -> {
+            try { controller.sendMessage(
+                    WHACK + " " +
+                    String.valueOf(id) + " " +
+                    controller.getPlayerNumber());
+            } catch (IOException ioe) {  }
+        });
+        return b;
+    }
+
     /**
      * updates GUI
      */
     private void refresh() {
-        for (int x = controller.getRows() - 1; x > -1; x--){
-            for (int y = controller.getColumns() - 1; y > -1; y--) {
+        for (int y = controller.getRows() - 1; y > -1; y--){
+            for (int x = controller.getColumns() - 1; x > -1; x--) {
                 System.out.println(board.toString());
                 if( controller.getMoleStatus(y, x) == 1){
-                    moles[y][x].setStyle("-fx-background-color: #654321");
+                    moles[x][y].setStyle("-fx-background-color: #654321");
                 }
                 else if(controller.getMoleStatus(y, x) == 0){
-                    moles[y][x].setStyle("-fx-background-color: #000000");
+                    moles[x][y].setStyle("-fx-background-color: #000000");
 
                 }
             }
@@ -142,7 +158,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             Platform.runLater( () -> this.refresh() );
         }
     }
-    /***/
+
+    /**stop closes the process after the GUI is notified to shutdown.*/
     @Override
-    public void stop() {  }
+    public void stop() { controller.close(); }
 }

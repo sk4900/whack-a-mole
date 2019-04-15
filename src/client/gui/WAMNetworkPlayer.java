@@ -116,6 +116,8 @@ public class WAMNetworkPlayer implements Closeable {
         { System.out.println("unsuccessful disconnect"); }
     }
 
+    public void setBoard(WAMBoard board) { this.board = board; }
+
     /**run responds to messages from the WAM server.*/
     private void run() {
         while (input.hasNextLine()) {
