@@ -25,10 +25,8 @@ public class WAMBoard {
     private List<Observer<WAMBoard>> observers;
 
     /**...creates a WAMBoard of specifiable rows and specifiable columns.*/
-    public WAMBoard(int columns, int rows) {
+    public WAMBoard() {
         this.observers =new LinkedList<>();
-        this.columns = columns;
-        this.rows = rows;
         board = new int[columns][rows];
     }
 
@@ -54,6 +52,18 @@ public class WAMBoard {
     /**getRows
      * @return an int that is the count of this board's rows.*/
     public int getRows() { return rows; }
+
+    /**
+     * sets the number of columns
+     * @param columns
+     */
+    public void setColumns(int columns) { this.columns = columns;}
+
+    /**
+     * sets the number of rows
+     * @param rows
+     */
+    public void setRows(int rows) {this.rows = rows;}
 
     /**
      * returns 1 or 0 if mole is up or down respectively

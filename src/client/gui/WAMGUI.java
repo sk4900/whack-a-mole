@@ -28,14 +28,10 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * application of the server's requests and the server of the GUI
      * application's response, if required.*/
     private WAMNetworkPlayer controller;
-
     /***/
-    private WAMBoard board;
+    private Button[][] moles;
 
-    /***/
-    private Scene scene;
-
-    private int[][] moles[][];
+    private WAMBoard board = new WAMBoard();
 
     /**
      * Creates the client socket and connects to the server
@@ -59,7 +55,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
             try {
                 int port = Integer.parseInt(args[1]);
-                controller = new WAMNetworkPlayer(args[0], port);
+                controller = new WAMNetworkPlayer(args[0], port, this.board);
                 start = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("illicit arguments...");
@@ -70,6 +66,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
         }
         controller.startListening();
+
     }
 
     /**
@@ -79,11 +76,10 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      */
     @Override
     public void start(Stage primaryStage) {
-
         GridPane grid = new GridPane();
-        board.addObserver(this);
         int columns = controller.getColumns();
         int rows = controller.getRows();
+        this.moles = new Button[columns][rows];
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
                 Button button = new Button();
@@ -91,19 +87,22 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 button.setMaxWidth(100);
                 button.setMinHeight(100);
                 button.setMinWidth(100);
-                grid.setGridLinesVisible(true);
-                BorderPane border = new BorderPane();
-                TextArea text = new TextArea();
-                text.setEditable(false);
-                text.setText("Welcome to Whack-A-Mole");
-                text.setMaxWidth(grid.getColumnCount() * 100);
-                text.setMaxHeight(100);
-                border.setBottom(text);
-                border.setCenter(grid);
-                this.scene = new Scene(border);
+                this.moles[i][j] = button;
+                grid.add(button, i, j);
             }
         }
-        primaryStage.setScene(this.scene);
+
+        grid.setGridLinesVisible(true);
+        BorderPane border = new BorderPane();
+        TextArea text = new TextArea();
+        text.setEditable(false);
+        text.setText("Welcome to Whack-A-Mole");
+        text.setMaxWidth(grid.getColumnCount() * 100);
+        text.setMaxHeight(100);
+        border.setBottom(text);
+        border.setCenter(grid);
+        Scene scene = new Scene(border);
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Whack-A-Mole");
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -115,7 +114,10 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         for (int i = 0; i < controller.getRows(); i++){
             for (int j = 0; j < controller.getColumns(); j++) {
                 if( controller.getMoleStatus(i, j) == 1){
-
+                    moles[i][j].setStyle("-fx-background-color: #654321");
+                }
+                else if(controller.getMoleStatus(i, j) == 0){
+                    moles[i][j].setStyle("-fx-background-color: #000000");
 
                 }
             }
