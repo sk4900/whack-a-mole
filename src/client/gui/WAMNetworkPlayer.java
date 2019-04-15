@@ -17,7 +17,9 @@ import static common.WAMProtocol.*;
  * WAM server, and so it represents the controller in the
  * model-view-controller architecture.
  * WAMNetworkPlayer -> ServerSocket -> WAMNetworkClient
- * @author Kadin Benjamin ktb1193*/
+ * @author Kadin Benjamin ktb1193
+ * @author Sungmin Kim sk4900*/
+
 public class WAMNetworkPlayer implements Closeable {
 
     /**a Socket that maintains the connection between the player
