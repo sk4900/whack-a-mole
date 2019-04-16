@@ -14,13 +14,11 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
-import static common.WAMProtocol.*;
+import static common.WAMProtocol.WHACK;
 
 /** responsible for creating the board
- *
  * @author Sungmin Kim sk4900
- * @author Kadin Benjamin ktb1193
- */
+ * @author Kadin Benjamin ktb1193*/
 public class WAMGUI extends Application implements Observer<WAMBoard>{
 
     /**the WAMNetworkPlayer is the controller that notifies the GUI
@@ -35,15 +33,11 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     /**a WAM board.*/
     private WAMBoard board = new WAMBoard();
 
-    /**
-     * Creates the client socket and connects to the server
-     * @param args command-line arguments
-     */
+    /**Creates the client socket and connects to the server
+     * @param args command-line arguments*/
     public static void main(String[] args) { launch(args); }
 
-    /**
-     * processes command-line arguments
-     */
+    /**init processes command-line arguments*/
     @Override
     public void init() {
         String[] args = getParameters().getRaw().toArray(new String[2]);
@@ -59,7 +53,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 int port = Integer.parseInt(args[1]);
                 board.setRows(3);
                 board.setColumns(4);
-                controller = new WAMNetworkPlayer(args[0], port, this.board);
+                controller = new WAMNetworkPlayer(args[0], port, board);
                 start = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("illicit arguments...");
@@ -72,25 +66,23 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         controller.startListening();
     }
 
-    /**
-     * creates the board for whack-a-mole
+    /**start creates the board for whack-a-mole
      * Grid pane with buttons and a text area for displaying updates
-     * @param primaryStage The stage
-     */
+     * @param primaryStage The stage*/
     @Override
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
-        int columns = controller.getColumns();
-        int rows = controller.getRows();
-        this.moles = new Button[columns][rows];
-        for (int y = 0; y < rows; y++) {
-            for (int x = columns - 1; x > -1; x--) {
-                Button button = createButton(x + y);
-                this.moles[x][y] = button;
-                grid.add(button, x, y);
+        grid.setGridLinesVisible(true);
+        moles = new Button[board.getColumns()][board.getRows()];
+        int id = 0;
+        for (int y = 0; y < board.getRows(); y++) {
+            for (int x = 0; x < board.getColumns(); x++) {
+                Button button = createButton(id);
+                grid.add(button, x, board.getRows() - y - 1);
+                moles[x][y] = button;
+                id++;
             }
         }
-        grid.setGridLinesVisible(true);
         BorderPane border = new BorderPane();
         TextArea text = new TextArea();
         text.setEditable(false);
@@ -108,7 +100,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     }
 
     /**createButton creates a button that represents a mole.
-     * @param id an integer that represents a mole's position on a WAM board.*/
+     * @param id an integer that represents a mole's position on a WAM board.
+     * @return a Button that represents a mole.*/
     private Button createButton(int id) {
         Button b = new Button();
         b.setMaxHeight(100);
@@ -125,17 +118,15 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         return b;
     }
 
-    /**
-     * updates GUI
-     */
+    /**refresh updates the GUI*/
     private void refresh() {
-        for (int y = 0; y < controller.getRows(); y++){
-            for (int x = controller.getColumns() - 1; x > -1; x--) {
+        for (int y = 0; y < board.getRows(); y++){
+            for (int x = 0; x < board.getColumns(); x++) {
                 System.out.println(board.toString());
-                if( controller.getMoleStatus(x, y) == 1){
+                if (board.getMoleStatus(x, y) == 1){
                     moles[x][y].setStyle("-fx-background-color: #654321");
                 }
-                else if(controller.getMoleStatus(x, y) == 0){
+                else if (board.getMoleStatus(x, y) == 0){
                     moles[x][y].setStyle("-fx-background-color: #000000");
 
                 }
@@ -143,12 +134,9 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         }
     }
 
-    /**
-     * Called by the model, WAMBoard whenever there is a state change
+    /**update is called by the model, WAMBoard, whenever there is a state change
      * that needs to be updated by the GUI.
-     *
-     * @param WAMboard
-     */
+     *@param WAMboard*/
     @Override
     public void update(WAMBoard WAMboard) {
         if ( Platform.isFxApplicationThread() ) {

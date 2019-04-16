@@ -21,7 +21,7 @@ public class WAMBoard {
      * column c (0 <= c <= columns) with some row r(0 <= r <= rows).*/
     private int[][] board;
 
-    /** the observers of this model */
+    /**the observers of this model */
     private List<Observer<WAMBoard>> observers;
 
     /**...creates a WAMBoard of specifiable rows and specifiable columns.*/
@@ -29,16 +29,15 @@ public class WAMBoard {
         this.observers = new LinkedList<>();
     }
 
-    /**
+    /**addObserver
      * The view calls this method to add themselves as an observer of the model.
-     *
-     * @param observer the observer
-     */
+     * @param observer the observer*/
     public void addObserver(Observer<WAMBoard> observer) {
         this.observers.add(observer);
     }
 
-    /** when the model changes, the observers are notified via their update() method */
+    /**alertObservers
+     * when the model changes, the observers are notified via their update() method */
     private void alertObservers() {
         for (Observer<WAMBoard> obs: this.observers ) {
             obs.update(this);
@@ -52,26 +51,26 @@ public class WAMBoard {
      * @return an int that is the count of this board's rows.*/
     public int getRows() { return rows; }
 
-    /**
+    /**setBoardSize
+     * @param columns
+     * @param rows */
+    public void setBoardSize(int columns, int rows) { this.board = new int[columns][rows];}
+
+    /**setColumns
      * sets the number of columns
-     * @param columns*/
+     * @param columns */
     public void setColumns(int columns) { this.columns = columns;}
 
-    /**
-     *
-     */
-    public void setBoardSize(int columns, int rows) { this.board = new int[columns][rows];}
-    /**
+    /**setRows
      * sets the number of rows
-     * @param rows*/
+     * @param rows */
     public void setRows(int rows) {this.rows = rows;}
 
-    /**
+    /**getMoleStatus
      * returns 1 or 0 if mole is up or down respectively
      * @param row
      * @param column
-     * @return
-     */
+     * @return */
     public int getMoleStatus(int column, int row) { return board[column][row]; }
 
     /**setMoleUp sets the integer value at some location of this
@@ -95,7 +94,7 @@ public class WAMBoard {
     @Override
     public String toString() {
         String s = "";
-        for (int y = 0; y < rows; y++) {
+        for (int y = rows - 1; y > -1; y--) {
             for (int x = 0; x < columns; x++) {
                 s = s.concat("[" + String.valueOf(board[x][y]) + "]");
             }
@@ -109,7 +108,5 @@ public class WAMBoard {
      * ( C(x), R(x) ) is any location in a two-dimensional matrix of c columns
      * and r rows; 0 <= C(x) <= c, 0 <= R(x) <= r, and 0 <= x <= (c * r) - 1.
      * @return an int[] that represents a location of a two-dimensional matrix.*/
-    private int[] getColumnRow(int x) {
-        return new int[] { (x % columns), (int) Math.floor(x / columns) };
-    }
+    public int[] getColumnRow(int x) { return new int[] { (x % columns), (int) (Math.floor(x / columns))}; }
 }

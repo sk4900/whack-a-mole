@@ -71,22 +71,6 @@ public class WAMNetworkPlayer implements Closeable {
      * run method, which listens to requests from a server.*/
     public void startListening() { new Thread(this::run).start(); }
 
-    /**getColumns
-     * @return an integer count of the game-board's columns.*/
-    public int getColumns() { return board.getColumns(); }
-
-    /**getRows
-     * @return an integer count of the game-board's rows.*/
-    public int getRows() { return board.getRows(); }
-
-    /**
-     * returns 1 or 0 if mole is up or down respectively
-     * @param row
-     * @param column
-     * @return
-     */
-    public int getMoleStatus(int column, int row) { return board.getMoleStatus(column, row); }
-
     /**getPlayerNumer
      * @return an integer that represents the order of this player's
      * connection, relative to the other player's connected to the same
@@ -118,6 +102,7 @@ public class WAMNetworkPlayer implements Closeable {
         { System.out.println("unsuccessful disconnect"); }
     }
 
+    /***/
     public void setBoard(WAMBoard board) { this.board = board; }
 
     /**run responds to messages from the WAM server.*/
@@ -146,8 +131,7 @@ public class WAMNetworkPlayer implements Closeable {
                         board.setMoleDown(detail[0]);
                         break;
                     case SCORE:
-                        for (int i = 0; i < detail.length; i++)
-                        { playerScores[i] = detail[i]; }
+                        playerScores = detail.clone();
                         break;
                     case GAME_WON:
                         playerOutcome = "VICTORY";
