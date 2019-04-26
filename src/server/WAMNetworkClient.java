@@ -3,16 +3,19 @@ package server;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import java.lang.Runnable;
 
 import java.net.Socket;
 
 import java.util.Scanner;
 
+import static common.WAMProtocol.*;
+
 /**WAMNetworkClient represents each client connected to a WAM server.
  * WAMNetworkClient -> ServerSocket -> WAMNetworkPlayer
- * @author Kadin Benjamin ktb1193*/
+ * @author Kadin Benjamin ktb1193
+ * @author Sungmin Kim sk4900*/
+
 public class WAMNetworkClient implements Closeable, Runnable {
 
     /**a Socket that maintains the connection between the server
@@ -60,13 +63,29 @@ public class WAMNetworkClient implements Closeable, Runnable {
      * to a WAM server.*/
     public int getConnectionOrder() { return connectionOrder; }
 
-    /**
-     * @param
-     * @throws */
-    public void sendMessage(String protocol) throws IOException {
-        output.print(protocol);
+    /** called to send a request to server because this player has lost */
+    public void gameLost (){
+        output.println(GAME_LOST);
+    }
+    /** called to send a request to server because this player has scored the most points */
+    public void gameWon (){
+        output.println(GAME_WON);
     }
 
+    /** called to send a request to server because this player tied with another player */
+    public void gameTied(){
+        output.println(GAME_TIED);
+    }
+
+    /**
+     * Sends a request to server to whack a mole.
+     * @param column of mole to whack
+     * @param row of mole to whack
+     * @throws IOException
+     */
+    public void sendWhack(int column, int row) throws IOException {
+        output.println(WHACK + " " + column + " " + row + " " + getConnectionOrder());
+    }
     /**
      * @return
      * @throws */

@@ -52,7 +52,7 @@ public class WAMServer implements Runnable {
         this.time = time;
     }
 
-    /**run is responsible for maintaining the Wack-A-Mole server and providing
+    /**run is responsible for maintaining the Whack-A-Mole server and providing
      * an environment that connected clients may interact with.*/
     @Override
     public void run() {
