@@ -36,7 +36,7 @@ public class WAMServer implements Runnable {
     private int time;
 
     /**...creates a WAM server.
-     * @param
+     * @param port is an integer that represents
      * @param
      * @param
      * @param

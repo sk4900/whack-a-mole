@@ -7,7 +7,6 @@ import java.util.List;
  * methods for updating its state.
  * @author Kadin Benjamin ktb1193
  * @author Sungmin Kim  sk4900*/
-
 public class WAMBoard {
 
     /**an integer that represents the count of the board's columns.*/
@@ -74,7 +73,9 @@ public class WAMBoard {
     public int getMoleStatus(int column, int row) { return board[column][row]; }
 
     /**setMoleUp sets the integer value at some location of this
-     * board equal to one; this represents a surfaced mole.*/
+     * board equal to one; this represents a surfaced mole.
+     * @param x is an integer that represents the intersection of
+     * a column and a row of this board.*/
     public void setMoleUp(int x) {
         int[] xy = getColumnRow(x);
         board[xy[0]][xy[1]] = 1;
@@ -82,7 +83,9 @@ public class WAMBoard {
     }
 
     /**setMoleDown sets the integer value at some location of this
-     * board equal to zero; this represents a submerged mole.*/
+     * board equal to zero; this represents a submerged mole.
+     * @param x is an integer that represents the intersection of
+     * a column and a row of this board.*/
     public void setMoleDown(int x) {
         int[] xy = getColumnRow(x);
         board[xy[0]][xy[1]] = 0;
@@ -108,5 +111,7 @@ public class WAMBoard {
      * ( C(x), R(x) ) is any location in a two-dimensional matrix of c columns
      * and r rows; 0 <= C(x) <= c, 0 <= R(x) <= r, and 0 <= x <= (c * r) - 1.
      * @return an int[] that represents a location of a two-dimensional matrix.*/
-    public int[] getColumnRow(int x) { return new int[] { (x % columns), (int) (Math.floor(x / columns))}; }
+    public int[] getColumnRow(int x) {
+        return new int[] { (x % columns), (int) (Math.floor(x / columns))};
+    }
 }
