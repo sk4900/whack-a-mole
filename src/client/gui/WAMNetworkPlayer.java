@@ -49,6 +49,9 @@ public class WAMNetworkPlayer implements Closeable {
     /**a WAMBoard that represents the state of the WAM game.*/
     private WAMBoard board;
 
+    /**the truth value of this player's readiness*/
+    private boolean started = false;
+
     /**..creates a player.
      * @param host is a String that represents a server's hostname
      * or IP address.
@@ -88,6 +91,10 @@ public class WAMNetworkPlayer implements Closeable {
      * this player is connected to.*/
     public int[] getScores() { return playerScores; }
 
+    /**isPlayerReady
+     * @return the truth value of this player's readiness.*/
+    public boolean isPlayerReady() { return started; }
+
     /**sendMessage sends a String object to the WAM server that this player
      * is connected to.
      * @throws IOException if sending or receiving the message fails.*/
@@ -101,9 +108,6 @@ public class WAMNetworkPlayer implements Closeable {
         catch (IOException ioe)
         { System.out.println("unsuccessful disconnect"); }
     }
-
-    /***/
-    public void setBoard(WAMBoard board) { this.board = board; }
 
     /**run responds to messages from the WAM server.*/
     private void run() {
@@ -120,9 +124,8 @@ public class WAMNetworkPlayer implements Closeable {
                 switch (request[0]) {
                     case WELCOME:
                         board.setBoardSize(detail[1],detail[0]);
-                        board.setColumns(detail[1]);
-                        board.setRows(detail[0]);
                         playerNumber = (detail[3] % detail[2]) + 1;
+                        started = true;
                         break;
                     case MOLE_UP:
                         board.setMoleUp(detail[0]);

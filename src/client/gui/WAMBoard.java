@@ -24,9 +24,7 @@ public class WAMBoard {
     private List<Observer<WAMBoard>> observers;
 
     /**...creates a WAMBoard of specifiable rows and specifiable columns.*/
-    public WAMBoard() {
-        this.observers = new LinkedList<>();
-    }
+    public WAMBoard() { this.observers = new LinkedList<>(); }
 
     /**addObserver
      * The view calls this method to add themselves as an observer of the model.
@@ -50,20 +48,16 @@ public class WAMBoard {
      * @return an int that is the count of this board's rows.*/
     public int getRows() { return rows; }
 
-    /**setBoardSize
-     * @param columns
-     * @param rows */
-    public void setBoardSize(int columns, int rows) { this.board = new int[columns][rows];}
-
-    /**setColumns
-     * sets the number of columns
-     * @param columns */
-    public void setColumns(int columns) { this.columns = columns;}
-
-    /**setRows
-     * sets the number of rows
-     * @param rows */
-    public void setRows(int rows) {this.rows = rows;}
+    /**setBoardSize defines a two-dimensional integer array of a specifiable
+     * count of columns and a specifiable count of rows that represents
+     * the moles of a WAM board.
+     * @param columns is an integer that represents a count of columns.
+     * @param rows is an integer that represents a count of rows.*/
+    public void setBoardSize(int columns, int rows) {
+        this.columns = columns;
+        this.rows = rows;
+        board = new int[columns][rows];
+    }
 
     /**getMoleStatus
      * returns 1 or 0 if mole is up or down respectively

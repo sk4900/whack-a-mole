@@ -31,13 +31,18 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     private Button[][] moles;
 
     /**a WAM board.*/
-    private WAMBoard board = new WAMBoard();
+    private WAMBoard board;
+
+    /**a BorderPane that represents the arrangment of this application's
+     * GUI components.*/
+    private BorderPane window;
 
     /**Creates the client socket and connects to the server
      * @param args command-line arguments*/
     public static void main(String[] args) { launch(args); }
 
-    /**init processes command-line arguments*/
+    /**init processes command-line arguments and initialize GUI
+     * components.*/
     @Override
     public void init() {
         String[] args = getParameters().getRaw().toArray(new String[2]);
@@ -51,9 +56,9 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
             try {
                 int port = Integer.parseInt(args[1]);
-                board.setRows(3);
-                board.setColumns(4);
+                board = new WAMBoard();
                 controller = new WAMNetworkPlayer(args[0], port, board);
+                controller.startListening();
                 start = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("illicit arguments...");
@@ -62,8 +67,27 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 System.out.println("failed connecting...");
                 args = new String[0];
             }
+        } while (!controller.isPlayerReady()) {  }
+        GridPane gridPane = new GridPane();
+        gridPane.setGridLinesVisible(true);
+        moles = new Button[board.getColumns()][board.getRows()];
+        for (int y = 0; y < board.getRows(); y++) {
+            for (int x = 0; x < board.getColumns(); x++) {
+                int id = x + (y * board.getColumns());
+                Button button = createButton(id);
+                gridPane.add(button, x, board.getRows() - y - 1);
+                moles[x][y] = button;
+            }
         }
-        controller.startListening();
+        window = new BorderPane();
+        TextArea text = new TextArea();
+        text.setEditable(false);
+        text.setText("Welcome to Whack-A-Mole");
+        text.setMaxWidth(gridPane.getColumnCount() * 100);
+        text.setMaxHeight(100);
+        window.setBottom(text);
+        window.setCenter(gridPane);
+        board.addObserver(this);
     }
 
     /**start creates the board for whack-a-mole
@@ -71,32 +95,11 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * @param primaryStage The stage*/
     @Override
     public void start(Stage primaryStage) {
-        GridPane grid = new GridPane();
-        grid.setGridLinesVisible(true);
-        moles = new Button[board.getColumns()][board.getRows()];
-        int id = 0;
-        for (int y = 0; y < board.getRows(); y++) {
-            for (int x = 0; x < board.getColumns(); x++) {
-                Button button = createButton(id);
-                grid.add(button, x, board.getRows() - y - 1);
-                moles[x][y] = button;
-                id++;
-            }
-        }
-        BorderPane border = new BorderPane();
-        TextArea text = new TextArea();
-        text.setEditable(false);
-        text.setText("Welcome to Whack-A-Mole");
-        text.setMaxWidth(grid.getColumnCount() * 100);
-        text.setMaxHeight(100);
-        border.setBottom(text);
-        border.setCenter(grid);
-        Scene scene = new Scene(border);
+        Scene scene = new Scene(window);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Whack-A-Mole");
         primaryStage.setResizable(false);
         primaryStage.show();
-        board.addObserver(this);
     }
 
     /**createButton creates a button that represents a mole.
