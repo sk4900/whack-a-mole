@@ -26,7 +26,6 @@ public class Mole extends Thread {
     public Mole(int id, WAMGame game) {
         this.id = id;
         this.game = game;
-        this.start();
     }
 
     /**run determines a mole's behavior while this game is playable.
@@ -38,9 +37,9 @@ public class Mole extends Thread {
     public void run() {
         while (game.isGameInProgress()) {
             if (random.nextInt(3) > 1) {
-                System.out.println(id);
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
-                try { this.sleep(sleepTime * 500); }
+                System.out.println(game.toString());
+                try { this.sleep(sleepTime * 1000);}
                 catch (InterruptedException ie) {  }
             }
         }

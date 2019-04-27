@@ -36,10 +36,10 @@ public class WAMGame {
      * @param time is an integer that defines the length of this game in
      * seconds.*/
     public WAMGame(int columns, int rows, int time) {
+        gameInProgress = true;
         this.time = time;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
-        gameInProgress = true;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
                 int id = x + (y * columns);
@@ -50,6 +50,11 @@ public class WAMGame {
 
     /**play starts this game.*/
     public void play() {
+        for (int y = 0; y < rows; y++){
+            for(int x=0;x < columns; x++){
+                moles[y][x].start();
+            }
+        }
         long startTime = System.currentTimeMillis();
         while ((System.currentTimeMillis() - startTime) / 1000 < time) {}
         gameInProgress = false;
@@ -103,7 +108,7 @@ public class WAMGame {
     }
 
     public static void main(String[] args) {
-        WAMGame game = new WAMGame(3, 3, 10);
+        WAMGame game = new WAMGame(4, 4, 10);
         game.play();
     }
 }
