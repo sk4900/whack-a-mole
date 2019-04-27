@@ -61,10 +61,15 @@ public class WAMServer implements Closeable, Runnable {
         this.close();
     }
 
-    /**close shutdowns this server.*/
+    /**close shutdowns this server after doing the same for its clients.*/
     @Override
     public void close() {
-        try { serverSocket.close(); }
+        try {
+            for (WAMNetworkClient client : clients) {
+                client.close();
+            }
+            serverSocket.close();
+        }
         catch (IOException ioe) {  }
     }
 

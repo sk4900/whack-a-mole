@@ -39,13 +39,13 @@ public class WAMGame {
         this.time = time;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
+        gameInProgress = true;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
                 int id = x + (y * columns);
                 moles[x][y] = new Mole(id, this);
             }
         }
-        gameInProgress = true;
     }
 
     /**play starts this game.*/
@@ -103,7 +103,7 @@ public class WAMGame {
     }
 
     public static void main(String[] args) {
-        WAMGame game = new WAMGame(4, 4, 10);
+        WAMGame game = new WAMGame(3, 3, 10);
         game.play();
     }
 }

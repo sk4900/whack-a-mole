@@ -17,7 +17,7 @@ public class Mole extends Thread {
     /***/
     private final int id;
 
-    /***/
+    /**a reference to a preexisting WAMgame.*/
     private final WAMGame game;
 
     /**...creates a Mole.
@@ -38,6 +38,7 @@ public class Mole extends Thread {
     public void run() {
         while (game.isGameInProgress()) {
             if (random.nextInt(3) > 1) {
+                System.out.println(id);
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
                 try { this.sleep(sleepTime * 500); }
                 catch (InterruptedException ie) {  }
