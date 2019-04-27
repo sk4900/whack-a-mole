@@ -35,6 +35,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * GUI components.*/
     private BorderPane window;
 
+    private TextArea text;
+
     /**Creates the client socket and connects to the server
      * @param args command-line arguments*/
     public static void main(String[] args) { launch(args); }
@@ -79,6 +81,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         }
         window = new BorderPane();
         TextArea text = new TextArea();
+        this.text = text;
         text.setEditable(false);
         text.setText("Welcome to Whack-A-Mole");
         text.setMaxWidth(gridPane.getColumnCount() * 100);
@@ -113,6 +116,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                     WHACK + " " +
                     id + " " +
                     controller.getPlayerNumber());
+                this.text.appendText("hi");
             } catch (IOException ioe) {  }
         });
         return b;

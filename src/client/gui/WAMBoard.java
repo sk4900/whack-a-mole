@@ -105,7 +105,7 @@ public class WAMBoard {
      * ( C(x), R(x) ) is any location in a two-dimensional matrix of c columns
      * and r rows; 0 <= C(x) <= c, 0 <= R(x) <= r, and 0 <= x <= (c * r) - 1.
      * @return an int[] that represents a location of a two-dimensional matrix.*/
-    private int[] getColumnRow(int x) {
+    public int[] getColumnRow(int x) {
         return new int[] { (x % columns), (int) (Math.floor(x / columns))};
     }
 }
