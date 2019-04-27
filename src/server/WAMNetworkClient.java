@@ -67,6 +67,10 @@ public class WAMNetworkClient extends Thread implements Closeable{
      * to a WAM server.*/
     public int getConnectionOrder() { return connectionOrder; }
 
+    /** sends messasge to client to start game */
+    public void welcome(int rows, int columns, int players, int playerNumber){
+        output.println(WELCOME + " " + rows + " " + columns + " " + players + " " + playerNumber);
+    }
     /** called to send a request to server because this player has lost */
     public void gameLost (){
         output.println(GAME_LOST);
@@ -115,6 +119,16 @@ public class WAMNetworkClient extends Thread implements Closeable{
     }
     /**close shutdowns a client's InputStream and OutputStream and
      * terminates its presence on a network.*/
+    /***/
+    @Override
+    public void run(){
+        while(game.isGameInProgress()){
+            if(input.nextLine().startsWith(WHACK)){
+                String response = input.nextLine();
+                String[] whacked = response.split(" ");
+                game.moleWhacked(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));           }
+        }
+    }
     @Override
     public void close() {
         try { client.close(); }

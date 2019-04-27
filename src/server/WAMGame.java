@@ -28,6 +28,9 @@ public class WAMGame {
     /**the truth value of this WAM game's playability.*/
     private boolean gameInProgress;
 
+    /** list of clients connected to this game*/
+    private WAMNetworkClient[] clients;
+
     /**...creates a WAMGame.
      * @param columns is an integer that counts the columns of the board
      * of this game.
@@ -35,9 +38,10 @@ public class WAMGame {
      * game.
      * @param time is an integer that defines the length of this game in
      * seconds.*/
-    public WAMGame(int columns, int rows, int time) {
+    public WAMGame(int columns, int rows, int time, WAMNetworkClient[] clients) {
         gameInProgress = true;
         this.time = time;
+        this.clients = clients;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
         for (int y = 0; y < rows; y++) {
@@ -85,8 +89,20 @@ public class WAMGame {
         return game;
     }
 
+    public int getColumns(){
+        return this.columns;
+    }
+    public int getRows(){
+        return this.rows;
+    }
     /***/
-    public void moleWhacked(int id, WAMNetworkClient player){
+    public void moleWhacked(int id, int playerNumber){
+        WAMNetworkClient player = clients[0];
+        for ( WAMNetworkClient client : clients){
+            if(client.getConnectionOrder() == playerNumber){
+                player = client;
+            }
+        }
         if(player.moleWhacked(id)){
             player.addScore(2);
             player.moleDown(id);
@@ -107,8 +123,4 @@ public class WAMGame {
         return new int[] { (id % columns), (int) (Math.floor(id / columns))};
     }
 
-    public static void main(String[] args) {
-        WAMGame game = new WAMGame(4, 4, 10);
-        game.play();
-    }
 }
