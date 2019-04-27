@@ -116,7 +116,6 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                     WHACK + " " +
                     id + " " +
                     controller.getPlayerNumber());
-                this.text.appendText("hi");
             } catch (IOException ioe) {  }
         });
         return b;
