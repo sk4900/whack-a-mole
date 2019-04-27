@@ -36,6 +36,7 @@ public class WAMNetworkClient extends Thread implements Closeable{
      * client has whacked.*/
     private int score;
 
+    /** instance of the game*/
     private WAMGame game;
 
     /**...creates a client.
@@ -80,12 +81,18 @@ public class WAMNetworkClient extends Thread implements Closeable{
         output.println(GAME_TIED);
     }
     /**
-     *
-     * @param id
+     * sends message to client to set mole up
+     * @param id of mole
      */
     public void moleUp(int id){
         output.println(MOLE_UP + " " + id);
     }
+
+    /**
+     * helper method to parse whack message
+     * @param id of mole
+     * @return true if whacked space has a mole that is up
+     */
     public boolean moleWhacked(int id){
         String response = input.nextLine();
 
@@ -100,8 +107,8 @@ public class WAMNetworkClient extends Thread implements Closeable{
         return false;
     }
     /**
-     *
-     * @param id
+     * sends message to client to set mole down
+     * @param id of mole to be set down
      */
     public void moleDown(int id){
         output.println(MOLE_DOWN + " " + id);

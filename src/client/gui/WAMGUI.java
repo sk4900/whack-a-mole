@@ -111,7 +111,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         b.setOnAction(event -> {
             try { controller.sendMessage(
                     WHACK + " " +
-                    String.valueOf(id) + " " +
+                    id + " " +
                     controller.getPlayerNumber());
             } catch (IOException ioe) {  }
         });

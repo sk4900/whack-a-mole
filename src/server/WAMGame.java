@@ -31,6 +31,9 @@ public class WAMGame {
     /**the truth value of this WAM game's playability.*/
     private boolean gameInProgress;
 
+    /** an array of all clients connected to the game*/
+    private WAMNetworkClient[] clients;
+
     /**Mole is an inner class whose instances compose the representation
      * of the board of this WAM game.*/
     private class Mole extends Thread {
@@ -83,8 +86,9 @@ public class WAMGame {
      * game.
      * @param time is an integer that defines the length of this game in
      * seconds.*/
-    public WAMGame(int columns, int rows, int time) {
+    public WAMGame(int columns, int rows, int time, WAMNetworkClient[] clients) {
         this.time = time;
+        this.clients = clients;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
         for (int y = 0; y < rows; y++) {
@@ -124,11 +128,14 @@ public class WAMGame {
         return game;
     }
 
-    /***/
+    /** updates score on whack and sends mole down message to client*/
     public void moleWhacked(int id, WAMNetworkClient player){
-        player.addScore(2);
         if(player.moleWhacked(id)){
+            player.addScore(2);
             player.moleDown(id);
+        }
+        else{
+            player.addScore(-1);
         }
     }
 
