@@ -39,17 +39,19 @@ public class WAMGame {
         this.time = time;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
-        gameInProgress = true;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
-                int id = x + (y * columns);
-                moles[x][y] = new Mole(id, this);
+                moles[x][y] = new Mole(this);
             }
         }
+        gameInProgress = true;
     }
 
     /**play starts this game.*/
     public void play() {
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) { moles[x][y].start(); }
+        }
         long startTime = System.currentTimeMillis();
         while ((System.currentTimeMillis() - startTime) / 1000 < time) {}
         gameInProgress = false;
@@ -100,10 +102,5 @@ public class WAMGame {
      * @return an int[] that represents a location of a two-dimensional matrix.*/
     private int[] getColumnRow(int id) {
         return new int[] { (id % columns), (int) (Math.floor(id / columns))};
-    }
-
-    public static void main(String[] args) {
-        WAMGame game = new WAMGame(3, 3, 10);
-        game.play();
     }
 }

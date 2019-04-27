@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -36,6 +38,18 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     private BorderPane window;
 
     private TextArea text;
+
+    private final Image background = new Image(
+            getClass().getResourceAsStream("background.png"),
+            90, 90, true, true);
+
+    private final Image moleUp = new Image(
+            getClass().getResourceAsStream("mole_up.png"),
+            90, 90, true, true);
+
+    private final Image moleDown = new Image(
+            getClass().getResourceAsStream("mole_down.png"),
+            90, 90, true, true);
 
     /**Creates the client socket and connects to the server
      * @param args command-line arguments*/
@@ -69,7 +83,6 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             }
         } while (!controller.isPlayerReady()) {  }
         GridPane gridPane = new GridPane();
-        gridPane.setGridLinesVisible(true);
         moles = new Button[board.getColumns()][board.getRows()];
         for (int y = 0; y < board.getRows(); y++) {
             for (int x = 0; x < board.getColumns(); x++) {
@@ -106,7 +119,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * @param id an integer that represents a mole's position on a WAM board.
      * @return a Button that represents a mole.*/
     private Button createButton(int id) {
-        Button b = new Button();
+        ImageView image = new ImageView(background);
+        Button b = new Button("", image);
         b.setMaxHeight(100);
         b.setMaxWidth(100);
         b.setMinHeight(100);
@@ -127,11 +141,10 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
             for (int x = 0; x < board.getColumns(); x++) {
                 System.out.println(board.toString());
                 if (board.getMoleStatus(x, y) == 1){
-                    moles[x][y].setStyle("-fx-background-color: #654321");
+                    moles[x][y].setGraphic(new ImageView(moleUp));
                 }
                 else if (board.getMoleStatus(x, y) == 0){
-                    moles[x][y].setStyle("-fx-background-color: #000000");
-
+                    moles[x][y].setGraphic(new ImageView(moleDown));
                 }
             }
         }
