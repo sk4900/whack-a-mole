@@ -4,8 +4,7 @@ import java.util.Random;
 
 import static java.lang.Thread.State.TIMED_WAITING;
 
-/**Mole is an class whose instances compose the board of a WAM game.
- * @author Kadin Benjamin ktb1193*/
+/**Mole is an class whose instances compose the board of a WAM game.*/
 public class Mole extends Thread {
 
     /**an integer that defines the maximum time in seconds during which
@@ -15,13 +14,20 @@ public class Mole extends Thread {
     /**a pseudorandom number generator of this Mole.*/
     private final Random random = new Random();
 
-    /**a reference to a preexisting WAM game.*/
+    /***/
+    private final int id;
+
+    /**a reference to a preexisting WAMgame.*/
     private final WAMGame game;
 
     /**...creates a Mole.
      * @param
      * @param */
-    public Mole(WAMGame game) { this.game = game; }
+    public Mole(int id, WAMGame game) {
+        this.id = id;
+        this.game = game;
+        this.start();
+    }
 
     /**run determines a mole's behavior while this game is playable.
      * If a mole is sleeping, then it is represented as inaccessible.
@@ -32,6 +38,7 @@ public class Mole extends Thread {
     public void run() {
         while (game.isGameInProgress()) {
             if (random.nextInt(3) > 1) {
+                System.out.println(id);
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
                 try { this.sleep(sleepTime * 500); }
                 catch (InterruptedException ie) {  }
@@ -42,7 +49,10 @@ public class Mole extends Thread {
     /**toString
      * @return a String that represents a mole's state.*/
     @Override
-    public String toString() { return isUp()? "1" : "0"; }
+    public String toString() {
+        if (isUp()) { return "1"; }
+        return "0";
+    }
 
     /**isUp
      * @return the truth value of mole's accessibility.*/

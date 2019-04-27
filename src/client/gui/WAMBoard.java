@@ -93,7 +93,7 @@ public class WAMBoard {
         String s = "";
         for (int y = rows - 1; y > -1; y--) {
             for (int x = 0; x < columns; x++) {
-                s = s.concat("[" + String.valueOf(moles[x][y]) + "]");
+                s = s.concat("[" + (moles[x][y]) + "]");
             }
             s = s.concat("\n");
         }
