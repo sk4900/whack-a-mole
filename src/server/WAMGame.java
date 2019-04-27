@@ -82,17 +82,6 @@ public class WAMGame {
         return game;
     }
 
-    /***/
-    public void moleWhacked(int id, WAMNetworkClient player){
-        if(player.moleWhacked(id)){
-            player.addScore(2);
-            player.moleDown(id);
-        }
-        else{
-            player.addScore(-1);
-        }
-    }
-
     /**getColumnRow represents the x-y-coordinate output of the parametric
      * equations C(x) = x % columns and R(x) = floor( x / columns ), where
      * ( C(x), R(x) ) is any location in a two-dimensional matrix of c columns

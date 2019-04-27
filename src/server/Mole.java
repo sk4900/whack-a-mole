@@ -14,20 +14,13 @@ public class Mole extends Thread {
     /**a pseudorandom number generator of this Mole.*/
     private final Random random = new Random();
 
-    /***/
-    private final int id;
-
     /**a reference to a preexisting WAMgame.*/
     private final WAMGame game;
 
     /**...creates a Mole.
      * @param
      * @param */
-    public Mole(int id, WAMGame game) {
-        this.id = id;
-        this.game = game;
-        this.start();
-    }
+    public Mole(WAMGame game) { this.game = game; }
 
     /**run determines a mole's behavior while this game is playable.
      * If a mole is sleeping, then it is represented as inaccessible.
@@ -38,7 +31,6 @@ public class Mole extends Thread {
     public void run() {
         while (game.isGameInProgress()) {
             if (random.nextInt(3) > 1) {
-                System.out.println(id);
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
                 try { this.sleep(sleepTime * 500); }
                 catch (InterruptedException ie) {  }
@@ -56,7 +48,5 @@ public class Mole extends Thread {
 
     /**isUp
      * @return the truth value of mole's accessibility.*/
-    public boolean isUp() {
-        return !this.getState().equals(TIMED_WAITING);
-    }
+    public boolean isUp() { return !this.getState().equals(TIMED_WAITING); }
 }
