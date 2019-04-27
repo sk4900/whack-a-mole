@@ -1,5 +1,6 @@
 package server;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 import java.lang.IllegalArgumentException;
@@ -16,17 +17,17 @@ import java.util.Scanner;
  * If the server is prompted to start with less than one clients, then the server will
  * automatically make room for a maximum of one client.
  * @author Kadin Benjamin ktb1193*/
-public class WAMServer implements Runnable {
+public class WAMServer implements Closeable, Runnable {
 
     /**a ServerSocket that constructs a point of potential connection on a
      * specifiable port.*/
     private ServerSocket serverSocket;
 
-    /**an integer that represents the width of a Wack-A-Mole board.*/
-    private int rows;
-
     /**an integer that represents the height of a Wack-A-Mole board.*/
     private int columns;
+
+    /**an integer that represents the width of a Wack-A-Mole board.*/
+    private int rows;
 
     /**an integer that represents the requisite number of connected clients
      * to start a game.*/
@@ -36,18 +37,20 @@ public class WAMServer implements Runnable {
     private int time;
 
     /**...creates a WAM server.
-     * @param port is an integer that represents
-     * @param
-     * @param
-     * @param
-     * @param
+     * @param port is an integer that represents the port through which this
+     * server listens for connections.
+     * @param columns is an integer that represents the width of a WAM board.
+     * @param rows is an integer that represents the height of a WAM board.
+     * @param connections is an integer that represents the requisite amount
+     * of client connections to start the WAM game.
+     * @param time is an integer that represents the game's length in seconds.
      * @throws IOException if there is an error while opening this socket.
      * @throws IllegalArgumentException if an illicit argument is provided.*/
-    public WAMServer(int port, int rows, int columns, int connections, int time)
+    public WAMServer(int port, int columns, int rows, int connections, int time)
         throws IOException, IllegalArgumentException {
         serverSocket = new ServerSocket(port);
-        this.rows = rows;
         this.columns = columns;
+        this.rows = rows;
         this.connections = connections;
         this.time = time;
     }
@@ -57,26 +60,34 @@ public class WAMServer implements Runnable {
     @Override
     public void run() {
         try { WAMNetworkClient[] clients = new WAMNetworkClient[connections];
-            for (int i = 0; i < clients.length; i++) { //establish connections
+            for (int i = 0; i < clients.length; i++) {
                 System.out.println("listening for client " + i);
                 Socket client = serverSocket.accept();
                 clients[i] = new WAMNetworkClient(client, i);
             }
             System.out.println("all connections satisfied");
-            WAMGame game = new WAMGame(clients, rows, columns, time);
-            new Thread(game).run(); //start the game
-            serverSocket.close();
+            WAMGame game = new WAMGame(clients, columns, rows, time);
+            game.play();
+            this.close();
         } catch (IOException ioe) { ioe.printStackTrace(); }
     }
 
+    /**close shutdowns this server.*/
+    @Override
+    public void close() {
+        try { serverSocket.close(); }
+        catch (IOException ioe) {  }
+    }
+
     /**main is responsible for starting a Wack-A-Mole server and detailing
-     * any issues in that process.*/
+     * any issues in that process.
+     * @param args is a String[] of command line arguments.*/
     public static void main(String[] args) {
         int[] params = WAMServer.formatArgs(args);
-        WAMServer server; //try to start a server
-        try { server = new WAMServer(params[0], params[1],
-                params[2], params[3], params[4]);
-            server.run(); //start server
+        WAMServer server;
+        try { server = new WAMServer(params[0], params[2],
+                params[1], params[3], params[4]);
+            server.run();
         } catch (IOException ioe) {
             System.out.println("server failure...\n");
             ioe.printStackTrace();

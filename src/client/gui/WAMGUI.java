@@ -10,8 +10,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.util.List;
 import java.util.Scanner;
 
 import static common.WAMProtocol.WHACK;
@@ -33,7 +31,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     /**a WAM board.*/
     private WAMBoard board;
 
-    /**a BorderPane that represents the arrangment of this application's
+    /**a BorderPane that represents the arrangement of this application's
      * GUI components.*/
     private BorderPane window;
 
@@ -95,8 +93,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
      * @param primaryStage The stage*/
     @Override
     public void start(Stage primaryStage) {
-        Scene scene = new Scene(window);
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(window));
         primaryStage.setTitle("Whack-A-Mole");
         primaryStage.setResizable(false);
         primaryStage.show();

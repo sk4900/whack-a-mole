@@ -18,7 +18,7 @@ public class WAMBoard {
     /**a two-dimensional matrix that represents the state of each
      * mole, where each mole is located at the intersection of some
      * column c (0 <= c <= columns) with some row r(0 <= r <= rows).*/
-    private int[][] board;
+    private int[][] moles;
 
     /**the observers of this model */
     private List<Observer<WAMBoard>> observers;
@@ -56,7 +56,7 @@ public class WAMBoard {
     public void setBoardSize(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
-        board = new int[columns][rows];
+        moles = new int[columns][rows];
     }
 
     /**getMoleStatus
@@ -64,7 +64,7 @@ public class WAMBoard {
      * @param row
      * @param column
      * @return */
-    public int getMoleStatus(int column, int row) { return board[column][row]; }
+    public int getMoleStatus(int column, int row) { return moles[column][row]; }
 
     /**setMoleUp sets the integer value at some location of this
      * board equal to one; this represents a surfaced mole.
@@ -72,7 +72,7 @@ public class WAMBoard {
      * a column and a row of this board.*/
     public void setMoleUp(int x) {
         int[] xy = getColumnRow(x);
-        board[xy[0]][xy[1]] = 1;
+        moles[xy[0]][xy[1]] = 1;
         alertObservers();
     }
 
@@ -82,7 +82,7 @@ public class WAMBoard {
      * a column and a row of this board.*/
     public void setMoleDown(int x) {
         int[] xy = getColumnRow(x);
-        board[xy[0]][xy[1]] = 0;
+        moles[xy[0]][xy[1]] = 0;
         alertObservers();
     }
 
@@ -93,7 +93,7 @@ public class WAMBoard {
         String s = "";
         for (int y = rows - 1; y > -1; y--) {
             for (int x = 0; x < columns; x++) {
-                s = s.concat("[" + String.valueOf(board[x][y]) + "]");
+                s = s.concat("[" + String.valueOf(moles[x][y]) + "]");
             }
             s = s.concat("\n");
         }
@@ -105,7 +105,7 @@ public class WAMBoard {
      * ( C(x), R(x) ) is any location in a two-dimensional matrix of c columns
      * and r rows; 0 <= C(x) <= c, 0 <= R(x) <= r, and 0 <= x <= (c * r) - 1.
      * @return an int[] that represents a location of a two-dimensional matrix.*/
-    public int[] getColumnRow(int x) {
+    private int[] getColumnRow(int x) {
         return new int[] { (x % columns), (int) (Math.floor(x / columns))};
     }
 }
