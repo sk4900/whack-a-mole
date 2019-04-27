@@ -75,6 +75,13 @@ public class WAMGame {
         return moles[mole[0]][mole[1]].isUp();
     }
     /***/
+    public void moleWhacked(int id, WAMNetworkClient player){
+        player.addScore(2);
+        if(player.moleWhacked(id)){
+            player.moleDown(id);
+        }
+    }
+    /***/
     public boolean isGameInProgress() { return gameInProgress; }
 
     /**getColumnRow represents the x-y-coordinate output of the parametric

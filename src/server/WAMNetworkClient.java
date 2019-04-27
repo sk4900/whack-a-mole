@@ -86,7 +86,19 @@ public class WAMNetworkClient extends Thread implements Closeable{
     public void moleUp(int id){
         output.println(MOLE_UP + " " + id);
     }
+    public boolean moleWhacked(int id){
+        String response = input.nextLine();
 
+        if(response.startsWith(WHACK)){
+            String[] whacked = response.split(" ");
+            if(game.isMoleUp(Integer.parseInt(whacked[1]))){
+                return true;
+            }
+
+
+        }
+        return false;
+    }
     /**
      *
      * @param id
