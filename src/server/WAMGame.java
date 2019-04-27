@@ -40,8 +40,7 @@ public class WAMGame {
 
         /***/
         @Override
-        public void run() {
-        }
+        public void run() {}
 
         /***/
         public boolean isUp() {
@@ -50,14 +49,13 @@ public class WAMGame {
     }
 
     /***/
-    public WAMGame(WAMNetworkClient[] clients, int columns, int rows, int time) {
+    public WAMGame(int columns, int rows, int time) {
         this.time = time;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) { moles[x][y] = new Mole(); }
         }
-        for (WAMNetworkClient client : clients) { new Thread(client).start(); }
         gameInProgress = true;
     }
 

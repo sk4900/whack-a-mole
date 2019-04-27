@@ -23,18 +23,11 @@ public class WAMServer implements Closeable, Runnable {
      * specifiable port.*/
     private ServerSocket serverSocket;
 
-    /**an integer that represents the height of a Wack-A-Mole board.*/
-    private int columns;
+    /**a WAMGame that represents the WAM game that is playable on this server.*/
+    private WAMGame game;
 
-    /**an integer that represents the width of a Wack-A-Mole board.*/
-    private int rows;
-
-    /**an integer that represents the requisite number of connected clients
-     * to start a game.*/
-    private int connections;
-
-    /**an integer that represents the length of a game in seconds.*/
-    private int time;
+    /**a list of the clients of this server.*/
+    private WAMNetworkClient[] clients;
 
     /**...creates a WAM server.
      * @param port is an integer that represents the port through which this
@@ -49,27 +42,23 @@ public class WAMServer implements Closeable, Runnable {
     public WAMServer(int port, int columns, int rows, int connections, int time)
         throws IOException, IllegalArgumentException {
         serverSocket = new ServerSocket(port);
-        this.columns = columns;
-        this.rows = rows;
-        this.connections = connections;
-        this.time = time;
+        clients = new WAMNetworkClient[connections];
+        game = new WAMGame(columns, rows, time);
+        for (int i = 0; i < clients.length; i++) {
+            System.out.println("listening for client " + i);
+            Socket client = serverSocket.accept();
+            clients[i] = new WAMNetworkClient(client, i, game);
+        }
+        System.out.println("all connections satisfied");
     }
 
     /**run is responsible for maintaining the Whack-A-Mole server and providing
      * an environment that connected clients may interact with.*/
     @Override
     public void run() {
-        try { WAMNetworkClient[] clients = new WAMNetworkClient[connections];
-            for (int i = 0; i < clients.length; i++) {
-                System.out.println("listening for client " + i);
-                Socket client = serverSocket.accept();
-                clients[i] = new WAMNetworkClient(client, i);
-            }
-            System.out.println("all connections satisfied");
-            WAMGame game = new WAMGame(clients, columns, rows, time);
-            game.play();
-            this.close();
-        } catch (IOException ioe) { ioe.printStackTrace(); }
+        for (WAMNetworkClient client : clients) { client.start(); }
+        game.play();
+        this.close();
     }
 
     /**close shutdowns this server.*/
