@@ -134,7 +134,8 @@ public class WAMNetworkPlayer implements Closeable {
                         board.setMoleDown(detail[0]);
                         break;
                     case WHACK:
-
+                        board.setMoleDown(detail[0]);
+                        break;
                     case SCORE:
                         playerScores = detail.clone();
                         break;

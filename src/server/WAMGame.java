@@ -30,6 +30,8 @@ public class WAMGame {
     private boolean gameInProgress;
 
     /***/
+    private WAMNetworkClient[] clients;
+    /***/
     private class Mole extends Thread {
 
         /***/
@@ -49,8 +51,9 @@ public class WAMGame {
     }
 
     /***/
-    public WAMGame(int columns, int rows, int time) {
+    public WAMGame(int columns, int rows, int time, WAMNetworkClient[] clients) {
         this.time = time;
+        this.clients = clients;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
         for (int y = 0; y < rows; y++) {
@@ -71,7 +74,6 @@ public class WAMGame {
         int[] mole = getColumnRow(id);
         return moles[mole[0]][mole[1]].isUp();
     }
-
     /***/
     public boolean isGameInProgress() { return gameInProgress; }
 

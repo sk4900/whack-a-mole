@@ -43,7 +43,7 @@ public class WAMServer implements Closeable, Runnable {
         throws IOException, IllegalArgumentException {
         serverSocket = new ServerSocket(port);
         clients = new WAMNetworkClient[connections];
-        game = new WAMGame(columns, rows, time);
+        game = new WAMGame(columns, rows, time, clients);
         for (int i = 0; i < clients.length; i++) {
             System.out.println("listening for client " + i);
             Socket client = serverSocket.accept();

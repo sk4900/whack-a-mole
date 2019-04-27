@@ -16,7 +16,7 @@ import static common.WAMProtocol.*;
  * @author Kadin Benjamin ktb1193
  * @author Sungmin Kim sk4900*/
 
-public class WAMNetworkClient implements Closeable, Runnable {
+public class WAMNetworkClient extends Thread implements Closeable{
 
     /**a Socket that maintains the connection between the server
      * and a client.*/
@@ -36,14 +36,17 @@ public class WAMNetworkClient implements Closeable, Runnable {
      * client has whacked.*/
     private int score;
 
+    private WAMGame game;
+
     /**...creates a client.
      * @param
      * @param
      * @throws IOException if an error occurs while accessing a
      * client's InputStream and OutputStream.*/
-    public WAMNetworkClient(Socket client, int connectionOrder)
+    public WAMNetworkClient(Socket client, int connectionOrder, WAMGame game)
         throws IOException {
         this.client = client;
+        this.game = game;
         input = new Scanner(client.getInputStream());
         output = new PrintStream(client.getOutputStream());
         this.connectionOrder = connectionOrder;
@@ -76,28 +79,21 @@ public class WAMNetworkClient implements Closeable, Runnable {
     public void gameTied(){
         output.println(GAME_TIED);
     }
-
     /**
-     * Sends a request to server to whack a mole.
-     * @param column of mole to whack
-     * @param row of mole to whack
-     * @throws IOException
+     *
+     * @param id
      */
-    public void sendWhack(int column, int row) throws IOException {
-        output.println(WHACK + " " + column + " " + row + " " + getConnectionOrder());
+    public void moleUp(int id){
+        output.println(MOLE_UP + " " + id);
     }
+
     /**
-     * @return
-     * @throws */
-    public String getMessage() throws IOException {
-        if (input.hasNextLine()) { return input.nextLine(); }
-        return null;
+     *
+     * @param id
+     */
+    public void moleDown(int id){
+        output.println(MOLE_DOWN + " " + id);
     }
-
-    /***/
-    @Override
-    public void run() {  }
-
     /**close shutdowns a client's InputStream and OutputStream and
      * terminates its presence on a network.*/
     @Override
