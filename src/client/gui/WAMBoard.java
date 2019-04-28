@@ -40,6 +40,7 @@ public class WAMBoard {
             obs.update(this);
         }
     }
+
     /**getColumns
      * @return an int that is the count of this board's columns.*/
     public int getColumns() { return columns; }

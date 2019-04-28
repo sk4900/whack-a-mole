@@ -125,6 +125,7 @@ public class WAMNetworkPlayer implements Closeable {
                     case WELCOME:
                         board.setBoardSize(detail[1],detail[0]);
                         playerNumber = (detail[3] % detail[2]) + 1;
+                        playerScores = new int[detail[2]];
                         started = true;
                         break;
                     case MOLE_UP:

@@ -4,7 +4,8 @@ import java.util.Random;
 
 import static java.lang.Thread.State.TIMED_WAITING;
 
-/**Mole is an class whose instances compose the board of a WAM game.*/
+/**Mole is a class whose instances compose the board of a WAM game.
+ * @author Kadin Benjamin ktb1193*/
 public class Mole extends Thread {
 
     /**an integer that defines the maximum time in seconds during which
@@ -17,9 +18,7 @@ public class Mole extends Thread {
     /**a reference to a preexisting WAMgame.*/
     private final WAMGame game;
 
-    /**...creates a Mole.
-     * @param
-     * @param */
+    /**...creates a Mole.*/
     public Mole(WAMGame game) { this.game = game; }
 
     /**run determines a mole's behavior while this game is playable.
@@ -32,7 +31,11 @@ public class Mole extends Thread {
         while (game.isGameInProgress()) {
             if (random.nextInt(3) > 1) {
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
-                try { this.sleep(sleepTime * 500); }
+                try {
+                    //notify game that it is down
+                    this.sleep(sleepTime * 500);
+                    //notify the game that it is up
+                }
                 catch (InterruptedException ie) {  }
             }
         }
@@ -47,6 +50,6 @@ public class Mole extends Thread {
     }
 
     /**isUp
-     * @return the truth value of mole's accessibility.*/
+     * @return the truth value of this mole's accessibility.*/
     public boolean isUp() { return !this.getState().equals(TIMED_WAITING); }
 }

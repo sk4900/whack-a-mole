@@ -117,8 +117,7 @@ public class WAMNetworkClient extends Thread implements Closeable{
     public void moleDown(int id){
         output.println(MOLE_DOWN + " " + id);
     }
-    /**close shutdowns a client's InputStream and OutputStream and
-     * terminates its presence on a network.*/
+
     /***/
     @Override
     public void run(){
@@ -126,9 +125,13 @@ public class WAMNetworkClient extends Thread implements Closeable{
             if(input.nextLine().startsWith(WHACK)){
                 String response = input.nextLine();
                 String[] whacked = response.split(" ");
-                game.moleWhacked(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));           }
+                //game.moleWhacked(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));
+            }
         }
     }
+
+    /**close shutdowns a client's InputStream and OutputStream and
+     * terminates its presence on a network.*/
     @Override
     public void close() {
         try { client.close(); }
