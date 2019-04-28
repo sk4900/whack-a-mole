@@ -90,7 +90,6 @@ public class WAMNetworkClient extends Thread implements Closeable{
      */
     public void moleUp(int id){
         output.println(MOLE_UP + " " + id);
-        System.out.println("UP");
     }
 
     /**
@@ -103,19 +102,10 @@ public class WAMNetworkClient extends Thread implements Closeable{
     }
     /**
      * helper method to parse whack message
-     * @param id of mole
-     * @return true if whacked space has a mole that is up
      */
-    public boolean moleWhacked(int id){
-        String response = input.nextLine();
-
-        if(response.startsWith(WHACK)){
-            String[] whacked = response.split(" ");
-            if(game.isMoleUp(Integer.parseInt(whacked[1]))){
-                return true;
-            }
-        }
-        return false;
+    public void moleWhacked(String message){
+            String[] whacked = message.split(" ");
+            game.moleWhack(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));
     }
     /**
      * sends message to client to set mole down
@@ -123,17 +113,21 @@ public class WAMNetworkClient extends Thread implements Closeable{
      */
     public void moleDown(int id){
         output.println(MOLE_DOWN + " " + id);
-        System.out.println("DOWN");
+        System.out.println("DOWN" + id);
     }
 
     /***/
     @Override
     public void run(){
-        while(game.isGameInProgress()){
+        System.out.println("running");
+        while(!game.isGameInProgress()){}
+        while(input.hasNextLine()){
+
+            System.out.println("hello");
             if(input.nextLine().startsWith(WHACK)){
                 String response = input.nextLine();
-                String[] whacked = response.split(" ");
-                //moleWhacked(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));
+                moleWhacked(response);
+
 
             }
         }

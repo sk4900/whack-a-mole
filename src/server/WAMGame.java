@@ -30,6 +30,8 @@ public class WAMGame implements Runnable{
     /**the truth value of this WAM game's playability.*/
     private boolean gameInProgress;
 
+    private int[] scores;
+
     private WAMNetworkClient[] clients;
     /**...creates a WAMGame.
      * @param columns is an integer that counts the columns of the board
@@ -40,6 +42,7 @@ public class WAMGame implements Runnable{
      * seconds.*/
     public WAMGame(int columns, int rows, int time, WAMNetworkClient[] clients ) {
         gameInProgress = true;
+        scores = new int[clients.length];
         this.clients = clients;
         this.time = time;
         this.columns = columns; this.rows = rows;
@@ -71,29 +74,55 @@ public class WAMGame implements Runnable{
 
     /** sends a message to all clients to put a mole up
      * @param id id of mole */
-    public void moleUp(int id){
+    public synchronized void moleUp(int id){
         for(WAMNetworkClient client: clients){
             client.moleUp(id);
         }
     }
+    public synchronized void moleWhack(int id, int playerNumber){
+        if(isMoleUp(id)){
+            findClient(playerNumber).addScore(2);
+        }
+        else{
+            findClient(playerNumber).addScore(-1);
+        }
+        displayScores(getScores());
+    }
+
     /** sends message to all clients to set mole down
      *  @param id id of mole */
-    public void moleDown(int id){
+    public synchronized void moleDown(int id){
         for(WAMNetworkClient client : clients){
+            System.out.println(client.getConnectionOrder());
             client.moleDown(id);
         }
     }
 
     /**
+     * finds a client with the given player number
+     * @param playerID
+     * @return
+     */
+    public WAMNetworkClient findClient(int playerID) {
+        for (WAMNetworkClient client : clients) {
+            if (playerID == client.getConnectionOrder()) {
+                return client;
+            }
+        }
+        return null;
+    }
+
+    public int[] getScores(){
+        for(int i = 0; i < clients.length; i++){
+            this.scores[i] = findClient(i).getScore();
+        }
+        return this.scores;
+    }
+
+    /**
      * displays current score to all clients. Called after score is changed for any client.
      */
-    public void displayScores(){
-        int[] scores = new int[clients.length];
-        int i = 0 ;
-        for(WAMNetworkClient client : clients){
-            scores[0] = client.getScore();
-            i++;
-        }
+    public void displayScores(int[] scores){
         for(WAMNetworkClient client : clients){
             client.sendScore(scores);
         }
@@ -111,8 +140,8 @@ public class WAMGame implements Runnable{
 
     @Override
     public void run(){
+        play();
         while(isGameInProgress()){
-            play();
             long startTime = System.currentTimeMillis();
             while ((System.currentTimeMillis() - startTime) / 1000 < time) {}
             gameInProgress = false;

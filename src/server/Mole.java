@@ -34,7 +34,6 @@ public class Mole extends Thread {
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
                 try {
                     game.moleUp(id);
-                    System.out.println(game.toString());
                     this.sleep(sleepTime * 2000);
                     game.moleDown(id);
                 }

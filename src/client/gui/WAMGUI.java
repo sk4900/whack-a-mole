@@ -75,9 +75,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         GridPane gridPane = buildBoard();
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(gridPane);
-        borderPane.setBottom(new HBox(createTextFields(
-            controller.getScores().length,
-            gridPane.getColumnCount())
+        borderPane.setBottom(new HBox(createTextFields(1, 4)
         ));
         window = new Scene(borderPane);
     }
@@ -118,9 +116,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 System.out.println("failed connecting...");
                 args = new String[0];
             }
-        }{
-
         }
+
     }
 
     /**buildBoard creates a gridded GUI component for representing each
@@ -201,6 +198,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 }
             }
         }
+        System.out.println(board.toString());
     }
 
     /**refreshText is responsible for updating the information displayed
