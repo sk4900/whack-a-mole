@@ -50,6 +50,7 @@ public interface WAMProtocol {
     public static final String MOLE_DOWN = "MOLE_DOWN";
 
     /**
+     *
      * From client: inform server that it has whacked a mole.
      * (Game server must then decide if a mole was really up at that
      * location. Only then would points be awarded. If it is a miss,

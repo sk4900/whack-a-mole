@@ -18,8 +18,9 @@ public class Mole extends Thread {
     /**a reference to a preexisting WAMgame.*/
     private final WAMGame game;
 
+    private final int id;
     /**...creates a Mole.*/
-    public Mole(WAMGame game) { this.game = game; }
+    public Mole(WAMGame game, int id) { this.id = id; this.game = game; }
 
     /**run determines a mole's behavior while this game is playable.
      * If a mole is sleeping, then it is represented as inaccessible.
@@ -32,9 +33,10 @@ public class Mole extends Thread {
             if (random.nextInt(3) > 1) {
                 long sleepTime = random.nextInt(MAX_SLEEP_TIME) + 1;
                 try {
-                    //notify game that it is down
-                    this.sleep(sleepTime * 500);
-                    //notify the game that it is up
+                    game.moleUp(id);
+                    System.out.println(game.toString());
+                    this.sleep(sleepTime * 2000);
+                    game.moleDown(id);
                 }
                 catch (InterruptedException ie) {  }
             }

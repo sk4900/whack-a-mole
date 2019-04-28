@@ -90,8 +90,17 @@ public class WAMNetworkClient extends Thread implements Closeable{
      */
     public void moleUp(int id){
         output.println(MOLE_UP + " " + id);
+        System.out.println("UP");
     }
 
+    /**
+     * sends scores to each client
+     * @param scores array of all scores ordered by player number
+     */
+    public void sendScore(int ...scores){
+        output.println(SCORE + " " + scores);
+
+    }
     /**
      * helper method to parse whack message
      * @param id of mole
@@ -105,8 +114,6 @@ public class WAMNetworkClient extends Thread implements Closeable{
             if(game.isMoleUp(Integer.parseInt(whacked[1]))){
                 return true;
             }
-
-
         }
         return false;
     }
@@ -116,6 +123,7 @@ public class WAMNetworkClient extends Thread implements Closeable{
      */
     public void moleDown(int id){
         output.println(MOLE_DOWN + " " + id);
+        System.out.println("DOWN");
     }
 
     /***/
@@ -125,7 +133,8 @@ public class WAMNetworkClient extends Thread implements Closeable{
             if(input.nextLine().startsWith(WHACK)){
                 String response = input.nextLine();
                 String[] whacked = response.split(" ");
-                //game.moleWhacked(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));
+                //moleWhacked(Integer.parseInt(whacked[1]), Integer.parseInt(whacked[2]));
+
             }
         }
     }

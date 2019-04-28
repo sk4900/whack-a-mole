@@ -95,7 +95,7 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     }
 
     /**processArgs interprets this player's command-line arguments.
-     * @param a String[] of command-line arguments.*/
+     * @param args String[] of command-line arguments.*/
     public void processArgs(String[] args) {
         boolean start = false;
         while (!start) {
@@ -118,7 +118,9 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 System.out.println("failed connecting...");
                 args = new String[0];
             }
-        } while (!controller.isPlayerReady()) {  }
+        }{
+
+        }
     }
 
     /**buildBoard creates a gridded GUI component for representing each
@@ -149,7 +151,8 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
         b.setMinHeight(100);
         b.setMinWidth(100);
         b.setOnAction(event -> {
-            try { controller.sendMessage(
+            try {
+                controller.sendMessage(
                     WHACK + " " +
                     id + " " +
                     controller.getPlayerNumber());
@@ -190,7 +193,6 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
     private void refresh() {
         for (int y = 0; y < board.getRows(); y++){
             for (int x = 0; x < board.getColumns(); x++) {
-                System.out.println(board.toString());
                 if (board.getMoleStatus(x, y) == 1){
                     moles[x][y].setGraphic(new ImageView(moleUp));
                 }
@@ -199,7 +201,6 @@ public class WAMGUI extends Application implements Observer<WAMBoard>{
                 }
             }
         }
-        refreshText();
     }
 
     /**refreshText is responsible for updating the information displayed

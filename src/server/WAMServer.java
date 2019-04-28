@@ -16,7 +16,8 @@ import java.util.Scanner;
 /**WAMServer is responsible for constructing and maintaining a Wack-A-Mole server.
  * If the server is prompted to start with less than one clients, then the server will
  * automatically make room for a maximum of one client.
- * @author Kadin Benjamin ktb1193*/
+ * @author Kadin Benjamin ktb1193
+ * @author Sungmin Kim sk4900*/
 public class WAMServer implements Closeable, Runnable {
 
     /**a ServerSocket that constructs a point of potential connection on a
@@ -43,12 +44,13 @@ public class WAMServer implements Closeable, Runnable {
         throws IOException, IllegalArgumentException {
         serverSocket = new ServerSocket(port);
         clients = new WAMNetworkClient[connections];
-        game = new WAMGame(columns, rows, time);
+        game = new WAMGame(columns, rows, time, clients);
         for (int i = 0; i < clients.length; i++) {
             System.out.println("listening for client " + i);
             Socket client = serverSocket.accept();
             clients[i] = new WAMNetworkClient(client, i, game);
         }
+        game.setClients(clients);
         System.out.println("all connections satisfied");
     }
 
@@ -61,7 +63,7 @@ public class WAMServer implements Closeable, Runnable {
             client.welcome(game.getRows(), game.getColumns(),
                 clients.length, client.getConnectionOrder());
         }
-        game.play();
+        game.run();
         this.close();
     }
 

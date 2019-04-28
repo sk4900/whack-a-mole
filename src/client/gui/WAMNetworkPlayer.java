@@ -121,10 +121,11 @@ public class WAMNetworkPlayer implements Closeable {
                 int[] detail = new int[request.length - 1];
                 for (int i = 1; i < request.length; i++)
                 { detail[i - 1] = Integer.parseInt(request[i]); }
+                System.out.println(request[0]);
                 switch (request[0]) {
                     case WELCOME:
                         board.setBoardSize(detail[1],detail[0]);
-                        playerNumber = (detail[3] % detail[2]) + 1;
+                        playerNumber = detail[3];
                         playerScores = new int[detail[2]];
                         started = true;
                         break;

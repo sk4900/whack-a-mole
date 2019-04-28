@@ -10,8 +10,10 @@ import static common.WAMProtocol.*;
 import static java.lang.Thread.State.TIMED_WAITING;
 
 /**WAMGame represents a game of Whack-A-Mole.
- * @author Kadin Benjamin ktb1193*/
-public class WAMGame {
+ * @author Kadin Benjamin
+ * @author Sungmin Kim sk4900*/
+
+public class WAMGame implements Runnable{
 
     /**an integer that defines the length of this game in seconds.*/
     private final int time;
@@ -28,6 +30,7 @@ public class WAMGame {
     /**the truth value of this WAM game's playability.*/
     private boolean gameInProgress;
 
+    private WAMNetworkClient[] clients;
     /**...creates a WAMGame.
      * @param columns is an integer that counts the columns of the board
      * of this game.
@@ -35,26 +38,28 @@ public class WAMGame {
      * game.
      * @param time is an integer that defines the length of this game in
      * seconds.*/
-    public WAMGame(int columns, int rows, int time) {
+    public WAMGame(int columns, int rows, int time, WAMNetworkClient[] clients ) {
+        gameInProgress = true;
+        this.clients = clients;
         this.time = time;
         this.columns = columns; this.rows = rows;
         moles = new Mole[columns][rows];
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
-                moles[x][y] = new Mole(this);
+                int id = x + (y * columns);
+                moles[x][y] = new Mole(this, id);
             }
         }
-        gameInProgress = true;
     }
-
+    /** adds a list of clients to this game */
+    public void setClients(WAMNetworkClient[] clients){
+        this.clients = clients;
+    }
     /**play starts this game.*/
     public void play() {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) { moles[x][y].start(); }
         }
-        long startTime = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - startTime) / 1000 < time) {}
-        gameInProgress = false;
     }
 
     /**isMoleUp
@@ -64,10 +69,56 @@ public class WAMGame {
         return moles[mole[0]][mole[1]].isUp();
     }
 
+    /** sends a message to all clients to put a mole up
+     * @param id id of mole */
+    public void moleUp(int id){
+        for(WAMNetworkClient client: clients){
+            client.moleUp(id);
+        }
+    }
+    /** sends message to all clients to set mole down
+     *  @param id id of mole */
+    public void moleDown(int id){
+        for(WAMNetworkClient client : clients){
+            client.moleDown(id);
+        }
+    }
+
+    /**
+     * displays current score to all clients. Called after score is changed for any client.
+     */
+    public void displayScores(){
+        int[] scores = new int[clients.length];
+        int i = 0 ;
+        for(WAMNetworkClient client : clients){
+            scores[0] = client.getScore();
+            i++;
+        }
+        for(WAMNetworkClient client : clients){
+            client.sendScore(scores);
+        }
+
+    }
     /**isGameInProgress
      * @reutrn the truth value of this game's playability.*/
     public boolean isGameInProgress() { return gameInProgress; }
 
+    /** return number of rows in the current game */
+    public int getRows() { return rows; }
+
+    /** returns number of columns in the current game */
+    public int getColumns() { return columns; }
+
+    @Override
+    public void run(){
+        while(isGameInProgress()){
+            play();
+            long startTime = System.currentTimeMillis();
+            while ((System.currentTimeMillis() - startTime) / 1000 < time) {}
+            gameInProgress = false;
+
+        }
+    }
     /**toString
      * @return a String that represents the state of this game.*/
     @Override
